@@ -1,11 +1,15 @@
 package routes
 
 import (
-	"fmt"
-
+	"github.com/ShahSau/culinary-bliss/controllers"
 	"github.com/gin-gonic/gin"
 )
 
 func MenuRoutes(c *gin.Engine) {
-	fmt.Println("MenuRoutes")
+	c.GET("/menu", controllers.GetMenus)
+	c.GET("/menu/:id", controllers.GetMenu)
+	c.POST("/menu", controllers.CreateMenu)
+	c.PUT("/menu/:id", controllers.UpdateMenu)
+	c.DELETE("/menu/:id", controllers.DeleteMenu)
+
 }
