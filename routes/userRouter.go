@@ -13,5 +13,7 @@ func UserRoutes(c *gin.Engine) {
 	c.POST("/users", controllers.CreateUser)
 	c.PUT("/users/:id", controllers.UpdateUser)
 	c.DELETE("/users/:id", controllers.DeleteUser)
+	c.POST("/login", controllers.Login)
+	c.POST("/register", controllers.Register)
 	fmt.Println("UserRoutes")
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetOrderItems(c *gin.Context) {
@@ -28,4 +29,8 @@ func DeleteOrderItem(c *gin.Context) {
 
 func GetOrderItemsByOrder(c *gin.Context) {
 	fmt.Println("GetOrderItemsByOrder")
+}
+
+func ItemsByOrder(id string) (OrderItems []primitive.M, err error) {
+	return
 }

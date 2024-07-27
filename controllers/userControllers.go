@@ -25,3 +25,20 @@ func UpdateUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	fmt.Println("DeleteUser")
 }
+
+func Login(c *gin.Context) {
+	fmt.Println("Login")
+}
+
+func Register(c *gin.Context) {
+	fmt.Println("Register")
+}
+
+func HashPassword(password string) string {
+	return password
+}
+
+func ComparePassword(hashedPassword string, password string) bool {
+	fmt.Println("ComparePassword")
+	return true
+}
