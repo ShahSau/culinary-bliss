@@ -25,3 +25,7 @@ func UpdateOrderItem(c *gin.Context) {
 func DeleteOrderItem(c *gin.Context) {
 	fmt.Println("DeleteOrderItem")
 }
+
+func GetOrderItemsByOrder(c *gin.Context) {
+	fmt.Println("GetOrderItemsByOrder")
+}

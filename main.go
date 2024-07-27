@@ -3,14 +3,15 @@ package main
 import (
 	"os"
 
-	_ "github.com/ShahSau/culinary-bliss/database"
+	"github.com/ShahSau/culinary-bliss/database"
 	"github.com/ShahSau/culinary-bliss/middleware"
 	"github.com/ShahSau/culinary-bliss/routes"
 	"github.com/gin-gonic/gin"
-	_ "go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-//var foodCollection *mongo.Collection = database.OpenCollection(database.Client, "food")
+var foodCollection *mongo.Collection = database.GetCollection(database.DB, "food")
+
 //var menuCollection *mongo.Collection = database.OpenCollection(database.Client, "menu")
 //var invoiceCollection *mongo.Collection = database.OpenCollection(database.Client, "invoice")
 //var tableCollection *mongo.Collection = database.OpenCollection(database.Client, "table")
@@ -22,6 +23,8 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+
+	database.ConnectDB()
 
 	router := gin.Default()
 	router.Use(gin.Logger())
