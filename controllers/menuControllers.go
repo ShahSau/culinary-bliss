@@ -18,7 +18,7 @@ func GetMenus(c *gin.Context) {
 	menus, err := menuCollection.Find(c.Request.Context(), bson.M{}, nil)
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -45,14 +45,14 @@ func GetMenu(c *gin.Context) {
 
 	defer c.Request.Body.Close()
 
-	err := menuCollection.FindOne(c, primitive.M{"menu_id": menuID}).Decode(&menu)
+	err := menuCollection.FindOne(c.Request.Context(), primitive.M{"menu_id": menuID}).Decode(&menu)
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"menu":    menu,
 		"error":   false,
 		"succes":  true,
@@ -79,17 +79,18 @@ func CreateMenu(c *gin.Context) {
 	reqMenu.ID = primitive.NewObjectID()
 	reqMenu.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	reqMenu.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	reqMenu.Menu_id = reqMenu.ID.Hex()
 
 	defer c.Request.Body.Close()
 
 	menuCreated, err := menuCollection.InsertOne(c.Request.Context(), reqMenu)
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Menu created successfully", "data": menuCreated})
+	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "Menu created successfully", "data": menuCreated})
 }
 
 func UpdateMenu(c *gin.Context) {
@@ -113,8 +114,15 @@ func UpdateMenu(c *gin.Context) {
 	err := menuCollection.FindOne(c.Request.Context(), bson.M{"menu_id": menuId}).Decode(&menu)
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	if !reqMenu.End_Date.IsZero() || !reqMenu.Start_Date.IsZero() {
+		if !inTimeSpan(reqMenu.Start_Date, reqMenu.End_Date, time.Now()) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Menu start date and end date must be within the current date"})
+			return
+		}
 	}
 
 	menu.ID = reqMenu.ID
@@ -125,10 +133,10 @@ func UpdateMenu(c *gin.Context) {
 	menu.Menu_id = menuId
 	menu.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
-	_, err = menuCollection.UpdateOne(c.Request.Context(), bson.M{"menu_id": menuId}, menu)
+	_, err = menuCollection.UpdateOne(c.Request.Context(), bson.M{"menu_id": menuId}, bson.M{"$set": menu})
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -141,9 +149,13 @@ func DeleteMenu(c *gin.Context) {
 	_, err := menuCollection.DeleteOne(c.Request.Context(), bson.M{"menu_id": menuId})
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Menu deleted successfully"})
+}
+
+func inTimeSpan(start, end, check time.Time) bool {
+	return start.After(check) && end.After(start)
 }
