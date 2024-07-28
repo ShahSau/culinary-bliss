@@ -41,6 +41,11 @@ func GetMenus(c *gin.Context) {
 func GetMenu(c *gin.Context) {
 	var menuID = c.Param("id")
 
+	if err := c.ShouldBindJSON(&menuID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	var menu models.Menu
 
 	defer c.Request.Body.Close()
