@@ -12,11 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"gopkg.in/bluesuncorp/validator.v5"
 )
 
 var foodCollection *mongo.Collection = database.GetCollection(database.DB, "food")
-var validate = validator.New("validate", validator.BakedInValidators)
 
 // GetFoods godoc
 func GetFoods(c *gin.Context) {
@@ -103,11 +101,11 @@ func CreateFood(c *gin.Context) {
 		return
 	}
 
-	// Validate the input
-	if err := validate.Struct(reqfood); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// // Validate the input
+	// if err := validate.Struct(reqfood); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
 	defer c.Request.Body.Close()
 	reqfood.Food_id = primitive.NewObjectID().Hex()

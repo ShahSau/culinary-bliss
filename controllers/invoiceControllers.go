@@ -110,13 +110,6 @@ func CreateInvoice(c *gin.Context) {
 	invoice.ID = primitive.NewObjectID()
 	invoice.Invoice_id = invoice.ID.Hex()
 
-	validationErr := validate.Struct(invoice)
-
-	if validationErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
-		return
-	}
-
 	_, err = invoiceCollection.InsertOne(c.Request.Context(), invoice)
 
 	if err != nil {
