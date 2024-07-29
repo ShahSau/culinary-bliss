@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/ShahSau/culinary-bliss/database"
 	"github.com/ShahSau/culinary-bliss/models"
@@ -16,7 +17,7 @@ func GetRestaurants(c *gin.Context) {
 	restaurants, err := restaurantCollection.Find(c.Request.Context(), bson.M{}, nil)
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -27,19 +28,19 @@ func GetRestaurants(c *gin.Context) {
 	for restaurants.Next(c.Request.Context()) {
 		var restaurant models.Restaurant
 		if err = restaurants.Decode(&restaurant); err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 		results = append(results, restaurant)
 	}
 
-	c.JSON(200, gin.H{"error": false, "message": "Restaurants retrived successfully", "data": results, "status": 200, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Restaurants retrived successfully", "data": results, "status": http.StatusOK, "success": true})
 }
 
 func GetRestaurant(c *gin.Context) {
 	restaurant_id := c.Param("id")
 
 	if err := c.ShouldBindJSON(&restaurant_id); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -50,11 +51,11 @@ func GetRestaurant(c *gin.Context) {
 	err := restaurantCollection.FindOne(c.Request.Context(), bson.M{"restaurant_id": restaurant_id}).Decode(&restaurant)
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{"error": false, "message": "Restaurant retrived successfully", "data": restaurant, "status": 200, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Restaurant retrived successfully", "data": restaurant, "status": http.StatusOK, "success": true})
 }
 
 func CreateRestaurant(c *gin.Context) {
@@ -69,16 +70,18 @@ func DeleteRestaurant(c *gin.Context) {
 	restaurant_id := c.Param("id")
 
 	if err := c.ShouldBindJSON(&restaurant_id); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	defer c.Request.Body.Close()
 
 	_, err := restaurantCollection.DeleteOne(c.Request.Context(), bson.M{"restaurant_id": restaurant_id})
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{"error": false, "message": "Restaurant deleted successfully", "status": 200, "success": true, "data": nil})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Restaurant deleted successfully", "status": http.StatusOK, "success": true, "data": nil})
 }

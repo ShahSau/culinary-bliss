@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -147,6 +148,10 @@ func DeleteMenu(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Menu deleted successfully", "status": http.StatusOK, "success": true, "data": nil})
+}
+
+func MenuByRestaurant(c *gin.Context) {
+	fmt.Println("FoodByRestaurant")
 }
 
 func inTimeSpan(start, end, check time.Time) bool {

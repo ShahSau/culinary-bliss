@@ -43,6 +43,7 @@ func main() {
 	routes.OrderRoutes(router)
 	routes.OrderItemRoutes(router)
 	routes.RestaurantRoutes(router)
+	routes.CatgeoryRoutes(router)
 
 	router.Run(":" + port)
 
