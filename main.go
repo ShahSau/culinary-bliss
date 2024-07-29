@@ -4,9 +4,12 @@ import (
 	"os"
 
 	"github.com/ShahSau/culinary-bliss/database"
+	docs "github.com/ShahSau/culinary-bliss/docs"
 	"github.com/ShahSau/culinary-bliss/middleware"
 	"github.com/ShahSau/culinary-bliss/routes"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -20,7 +23,17 @@ func main() {
 	router := gin.Default()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+
 	routes.UserRoutes(router)
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// Swagger docs
+	docs.SwaggerInfo.Title = "Culinary Bliss API"
+	docs.SwaggerInfo.Description = "Culinary Bliss restaurant management app designed to streamline your operations and elevate your dining experience and for efficient, effective, and effortless restaurant management."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "https://culinary-bliss.onrender.com"
+
 	router.Use(middleware.Authtication)
 
 	routes.FoodRoutes(router)
@@ -29,6 +42,7 @@ func main() {
 	routes.TableRoutes(router)
 	routes.OrderRoutes(router)
 	routes.OrderItemRoutes(router)
+	routes.RestaurantRoutes(router)
 
 	router.Run(":" + port)
 

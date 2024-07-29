@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"fmt"
-
 	"github.com/ShahSau/culinary-bliss/controllers"
 	"github.com/gin-gonic/gin"
 )
@@ -14,5 +12,6 @@ func UserRoutes(c *gin.Engine) {
 	c.DELETE("/users/:id", controllers.DeleteUser)
 	c.POST("/login", controllers.Login)
 	c.POST("/register", controllers.Register)
-	fmt.Println("UserRoutes")
+	c.POST("/logout", controllers.Logout)
+	c.POST("/reset-password", controllers.ResetPassword)
 }

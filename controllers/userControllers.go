@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -84,7 +83,24 @@ func GetUser(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
-	fmt.Println("UpdateUser")
+	userId := c.Param("id")
+	var user models.User
+
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+
+	_, err := userCollection.UpdateOne(c.Request.Context(), bson.D{{Key: "id", Value: userId}}, bson.D{{Key: "$set", Value: user}})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "User updated successfully", "status": http.StatusOK, "success": true, "data": user})
 }
 
 func DeleteUser(c *gin.Context) {
@@ -181,6 +197,57 @@ func Register(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "User created successfully", "data": user, "status": http.StatusCreated, "success": true})
 
+}
+
+func Logout(c *gin.Context) {
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	helpers.UpdateAllTokens(user.User_id, "", "")
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "User logged out successfully", "status": http.StatusOK, "success": true})
+}
+
+func ResetPassword(c *gin.Context) {
+	var user struct {
+		Email       string `json:"email" binding:"required"`
+		OldPassword string `json:"old_password" binding:"required"`
+		NewPassword string `json:"new_password" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var foundUser models.User
+	err := userCollection.FindOne(c.Request.Context(), bson.D{{Key: "email", Value: user.Email}}).Decode(&foundUser)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	passwordIsValid, msg := ComparePassword(foundUser.Password, user.OldPassword)
+
+	if !passwordIsValid {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": msg})
+		return
+	}
+
+	new_password := HashPassword(user.NewPassword)
+	foundUser.Password = new_password
+
+	foundUser.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+
+	_, err = userCollection.UpdateOne(c.Request.Context(), bson.D{{Key: "email", Value: user.Email}}, bson.D{{Key: "$set", Value: foundUser}})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Password reset successfully", "status": http.StatusOK, "success": true, "data": foundUser})
 }
 
 func HashPassword(password string) string {
