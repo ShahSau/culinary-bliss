@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -131,4 +132,18 @@ func UpdateOrder(c *gin.Context) {
 
 func DeleteOrder(c *gin.Context) {
 	fmt.Println("DeleteOrder")
+}
+
+func OrderItemOrderCreator(order models.Order) string {
+
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	order.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	order.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	order.ID = primitive.NewObjectID()
+	order.Order_id = order.ID.Hex()
+
+	orderCollection.InsertOne(ctx, order)
+	defer cancel()
+
+	return order.Order_id
 }

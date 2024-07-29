@@ -101,12 +101,6 @@ func CreateFood(c *gin.Context) {
 		return
 	}
 
-	// // Validate the input
-	// if err := validate.Struct(reqfood); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
 	defer c.Request.Body.Close()
 	reqfood.Food_id = primitive.NewObjectID().Hex()
 

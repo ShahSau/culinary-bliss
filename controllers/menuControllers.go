@@ -100,12 +100,6 @@ func UpdateMenu(c *gin.Context) {
 		return
 	}
 
-	// Validate the input
-	if err := validate.Struct(reqMenu); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	menuId := c.Param("id")
 
 	menu := models.Menu{}
