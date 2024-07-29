@@ -42,7 +42,7 @@ func GetOrderItems(c *gin.Context) {
 		allOrdersItems = append(allOrdersItems, orderItem)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Order Items retrived successfully", "data": allOrdersItems, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order Items retrived successfully", "data": allOrdersItems, "status": http.StatusOK, "success": true})
 
 }
 
@@ -55,7 +55,7 @@ func GetOrderItemsByOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Order Items retrived successfully", "data": allorders, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order Items retrived successfully", "data": allorders, "status": http.StatusOK, "success": true})
 
 }
 
@@ -77,7 +77,7 @@ func GetOrderItem(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Order Item created successfully", "data": orderItem, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order Item created successfully", "data": orderItem, "status": http.StatusOK, "success": true})
 }
 
 func CreateOrderItem(c *gin.Context) {
@@ -105,6 +105,7 @@ func CreateOrderItem(c *gin.Context) {
 		item.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		item.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		item.Unit_price = toFixed(item.Unit_price, 2)
+
 		orderItems = append(orderItems, item)
 	}
 
@@ -115,7 +116,7 @@ func CreateOrderItem(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"error": nil, "message": "Order Item created successfully", "data": orderItems, "status": http.StatusCreated, "success": true})
+	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "Order Item created successfully", "data": orderItems, "status": http.StatusCreated, "success": true})
 
 }
 
@@ -156,11 +157,20 @@ func UpdateOrderItem(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Order Item updated successfully", "data": orderItem, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order Item updated successfully", "data": orderItem, "status": http.StatusOK, "success": true})
 }
 
 func DeleteOrderItem(c *gin.Context) {
-	fmt.Println("DeleteOrderItem")
+	orderItemId := c.Param("id")
+
+	_, err := orderItemCollection.DeleteOne(c.Request.Context(), bson.M{"order_item_id": orderItemId})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": fmt.Sprintf("Order Item with ID %s deleted successfully", orderItemId), "status": http.StatusOK, "success": true})
 }
 
 func ItemsByOrder(id string) (OrderItems []primitive.M, err error) {

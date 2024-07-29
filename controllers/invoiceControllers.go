@@ -45,7 +45,7 @@ func GetInvoices(c *gin.Context) {
 		results = append(results, invoice)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Invoice retrived successfully", "data": results, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Invoice retrived successfully", "data": results, "status": http.StatusOK, "success": true})
 }
 
 func GetInvoice(c *gin.Context) {
@@ -81,7 +81,7 @@ func GetInvoice(c *gin.Context) {
 	invoiceView.Table_number = allOrders[0]["table_number"]
 	invoiceView.Order_details = allOrders[0]["order_items"]
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Invoice retrieved successfully", "data": invoiceView, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Invoice retrieved successfully", "data": invoiceView, "status": http.StatusOK, "success": true})
 }
 
 func CreateInvoice(c *gin.Context) {
@@ -117,7 +117,7 @@ func CreateInvoice(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"error": nil, "message": "Invoice created successfully", "status": http.StatusCreated, "success": true})
+	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "Invoice created successfully", "status": http.StatusCreated, "success": true, "data": invoice})
 
 }
 
@@ -165,7 +165,7 @@ func UpdateInvoice(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Invoice updated successfully", "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Invoice updated successfully", "status": http.StatusOK, "success": true, "data": updateObj})
 
 }
 
@@ -179,5 +179,5 @@ func DeleteInvoice(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Invoice deleted successfully", "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Invoice deleted successfully", "status": http.StatusOK, "success": true, "data": nil})
 }

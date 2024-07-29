@@ -34,7 +34,7 @@ func GetMenus(c *gin.Context) {
 		results = append(results, menu)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Menu retrived successfully", "data": results, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Menu retrived successfully", "data": results, "status": http.StatusOK, "success": true})
 
 }
 
@@ -58,7 +58,7 @@ func GetMenu(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"menu":    menu,
+		"data":    menu,
 		"error":   false,
 		"succes":  true,
 		"message": "Menu retrieved successfully",
@@ -89,7 +89,7 @@ func CreateMenu(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "Menu created successfully", "data": menuCreated})
+	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "Menu created successfully", "data": menuCreated, "status": http.StatusCreated, "success": true})
 }
 
 func UpdateMenu(c *gin.Context) {
@@ -146,7 +146,7 @@ func DeleteMenu(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Menu deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Menu deleted successfully", "status": http.StatusOK, "success": true, "data": nil})
 }
 
 func inTimeSpan(start, end, check time.Time) bool {

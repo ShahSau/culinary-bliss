@@ -16,7 +16,6 @@ import (
 
 var foodCollection *mongo.Collection = database.GetCollection(database.DB, "food")
 
-// GetFoods godoc
 func GetFoods(c *gin.Context) {
 
 	recordPerPage, err := strconv.Atoi(c.Query("recordPerPage"))
@@ -64,7 +63,7 @@ func GetFoods(c *gin.Context) {
 
 	var results []bson.M
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Food retrived successfully", "data": results[0], "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Food retrived successfully", "data": results[0], "status": http.StatusOK, "success": true})
 }
 
 func GetFood(c *gin.Context) {
@@ -82,7 +81,7 @@ func GetFood(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusAccepted, gin.H{
-		"food":    food,
+		"data":    food,
 		"error":   false,
 		"succes":  true,
 		"message": "Food retrieved successfully",
@@ -108,7 +107,7 @@ func CreateFood(c *gin.Context) {
 	err := database.GetCollection(database.DB, "menu").FindOne(c.Request.Context(), primitive.M{"menu_id": reqfood.Menu_id}).Decode(&menu)
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Menu not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Menu not found"})
 		return
 	}
 
@@ -130,7 +129,7 @@ func CreateFood(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusAccepted, gin.H{
-		"food":    foodCreated,
+		"data":    foodCreated,
 		"error":   false,
 		"succes":  true,
 		"message": "Food created successfully",
@@ -194,6 +193,7 @@ func UpdateFood(c *gin.Context) {
 		"succes":  true,
 		"message": "Food updated successfully",
 		"status":  http.StatusOK,
+		"data":    updateObj,
 	})
 
 }
@@ -213,11 +213,8 @@ func DeleteFood(c *gin.Context) {
 		"succes":  true,
 		"message": "Food deleted successfully",
 		"status":  http.StatusOK,
+		"data":    nil,
 	})
-}
-
-func roundToTwo(num float64) float64 {
-	return float64(int(num*100)) / 100
 }
 
 func toFixed(num float64, precision int) float64 {

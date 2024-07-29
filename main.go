@@ -7,16 +7,7 @@ import (
 	"github.com/ShahSau/culinary-bliss/middleware"
 	"github.com/ShahSau/culinary-bliss/routes"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
 )
-
-var foodCollection *mongo.Collection = database.GetCollection(database.DB, "food")
-
-//var menuCollection *mongo.Collection = database.OpenCollection(database.Client, "menu")
-//var invoiceCollection *mongo.Collection = database.OpenCollection(database.Client, "invoice")
-//var tableCollection *mongo.Collection = database.OpenCollection(database.Client, "table")
-//var orderCollection *mongo.Collection = database.OpenCollection(database.Client, "order")
-//var orderItemCollection *mongo.Collection = database.OpenCollection(database.Client, "orderItem")
 
 func main() {
 	port := os.Getenv("PORT")

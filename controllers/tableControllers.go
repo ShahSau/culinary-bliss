@@ -30,12 +30,12 @@ func GetTables(c *gin.Context) {
 	for tables.Next(c.Request.Context()) {
 		var table models.Table
 		if err = tables.Decode(&table); err != nil {
-			c.JSON(500, gin.H{"error": true, "message": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": true, "message": err.Error()})
 		}
 		results = append(results, table)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Table retrived successfully", "data": results, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table retrived successfully", "data": results, "status": http.StatusOK, "success": true})
 }
 
 func GetTable(c *gin.Context) {
@@ -57,7 +57,7 @@ func GetTable(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Table retrived successfully", "data": table, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table retrived successfully", "data": table, "status": http.StatusOK, "success": true})
 }
 
 func CreateTable(c *gin.Context) {
@@ -83,7 +83,7 @@ func CreateTable(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"error": nil, "message": "Table created successfully", "data": tableReq, "status": http.StatusCreated, "success": true})
+	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "Table created successfully", "data": tableReq, "status": http.StatusCreated, "success": true})
 
 }
 
@@ -116,10 +116,24 @@ func UpdateTable(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Table updated successfully", "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table updated successfully", "status": http.StatusOK, "success": true})
 
 }
 
 func DeleteTable(c *gin.Context) {
-	fmt.Println("DeleteTable")
+	table_id := c.Param("id")
+
+	if err := c.ShouldBindJSON(&table_id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err := tableCollection.DeleteOne(c.Request.Context(), bson.M{"table_id": table_id})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": fmt.Sprintf("Table with ID %s deleted successfully", table_id), "status": http.StatusOK, "success": true, "data": nil})
 }

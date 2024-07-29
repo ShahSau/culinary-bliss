@@ -79,12 +79,8 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"data": user, "status": http.StatusOK, "success": true, "error": false, "message": "User retrieved successfully"})
 
-}
-
-func CreateUser(c *gin.Context) {
-	fmt.Println("CreateUser")
 }
 
 func UpdateUser(c *gin.Context) {
@@ -92,7 +88,20 @@ func UpdateUser(c *gin.Context) {
 }
 
 func DeleteUser(c *gin.Context) {
-	fmt.Println("DeleteUser")
+	userId := c.Param("id")
+
+	if err := c.ShouldBindJSON(&userId); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err := userCollection.DeleteOne(c.Request.Context(), bson.D{{Key: "id", Value: userId}})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "User deleted successfully", "status": http.StatusOK, "success": true, "data": nil})
 }
 
 func Login(c *gin.Context) {
@@ -120,7 +129,7 @@ func Login(c *gin.Context) {
 
 	helpers.UpdateAllTokens(foundUser.User_id, token, refreshToken)
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "User logged in successfully", "data": foundUser, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "User logged in successfully", "data": foundUser, "status": http.StatusOK, "success": true})
 
 }
 
@@ -170,7 +179,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"error": nil, "message": "User created successfully", "data": user, "status": http.StatusCreated, "success": true})
+	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "User created successfully", "data": user, "status": http.StatusCreated, "success": true})
 
 }
 

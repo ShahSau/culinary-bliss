@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -36,7 +35,7 @@ func GetOrders(c *gin.Context) {
 		results = append(results, order)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Order retrived successfully", "data": results, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order retrived successfully", "data": results, "status": http.StatusOK, "success": true})
 }
 
 func GetOrder(c *gin.Context) {
@@ -58,7 +57,7 @@ func GetOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Order retrived successfully", "data": order, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order retrived successfully", "data": order, "status": http.StatusOK, "success": true})
 
 }
 
@@ -92,7 +91,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"error": nil, "message": "Order created successfully", "data": orderReq, "status": http.StatusCreated, "success": true})
+	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "Order created successfully", "data": orderReq, "status": http.StatusCreated, "success": true})
 }
 
 func UpdateOrder(c *gin.Context) {
@@ -126,12 +125,21 @@ func UpdateOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": nil, "message": "Order updated successfully", "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order updated successfully", "status": http.StatusOK, "success": true, "data": updateObj})
 
 }
 
 func DeleteOrder(c *gin.Context) {
-	fmt.Println("DeleteOrder")
+	orderId := c.Param("id")
+
+	_, err := orderCollection.DeleteOne(c.Request.Context(), bson.M{"order_id": orderId})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order deleted successfully", "status": http.StatusOK, "success": true, "data": nil})
 }
 
 func OrderItemOrderCreator(order models.Order) string {
