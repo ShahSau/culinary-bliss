@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/ShahSau/culinary-bliss/database"
@@ -58,12 +57,47 @@ func GetCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Category retrived successfully", "data": category, "status": http.StatusOK, "success": true})
 }
 
-func CreateCategory() {
-	fmt.Println("CreateCategory")
+func CreateCategory(c *gin.Context) {
+	var category models.Category
+
+	if err := c.ShouldBindJSON(&category); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	defer c.Request.Body.Close()
+
+	_, err := categoryCollection.InsertOne(c.Request.Context(), category)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Category created successfully", "status": http.StatusOK, "success": true, "data": category})
 }
 
-func UpdateCategory() {
-	fmt.Println("UpdateCategory")
+func UpdateCategory(c *gin.Context) {
+	var category models.Category
+
+	if err := c.ShouldBindJSON(&category); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	defer c.Request.Body.Close()
+
+	category_id := c.Param("id")
+
+	_, err := categoryCollection.UpdateOne(c.Request.Context(), bson.M{"category_id": category_id}, bson.D{{Key: "$set", Value: category}})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Category updated successfully", "status": http.StatusOK, "success": true, "data": category})
+
 }
 
 func DeleteCategory(c *gin.Context) {
