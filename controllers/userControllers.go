@@ -18,16 +18,19 @@ import (
 
 var userCollection *mongo.Collection = database.GetCollection(database.DB, "users")
 
-// @Summary		Create User
-// @Description	Create a new user
+// @Summary		Get all Users
+// @Description	Get all users
 // @Tags			Admin
 // @Accept			json
 // @Produce		json
 // @Security		BearerAuth
 // @param Authorization header string true "Token"
+// @Param 		 recordPerPage query int false "Record Per Page"
+// @Param 		 page query int false "Page"
+// @Param 		 startIndex query int false "Start Index"
 // @Success		200	{object}	string
 // @Failure		500	{object}	string
-// @Router			/users [post]
+// @Router			/users [get]
 func GetUsers(c *gin.Context) {
 	userEmail, _ := c.Get("first_name")
 	var isAdmin = helpers.IsAdmin(userEmail.(string))

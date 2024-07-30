@@ -36,6 +36,11 @@ definitions:
     - new_password
     - old_password
     type: object
+  types.Rating:
+    properties:
+      rating:
+        type: number
+    type: object
   types.RegisterUser:
     properties:
       email:
@@ -54,6 +59,27 @@ definitions:
     - last_name
     - password
     - phone
+    type: object
+  types.Restaurant:
+    properties:
+      delivery:
+        type: boolean
+      image:
+        type: string
+      menu:
+        items:
+          type: string
+        type: array
+      pickup:
+        type: boolean
+      rating:
+        type: number
+      ratingCount:
+        type: integer
+      time:
+        type: string
+      title:
+        type: string
     type: object
   types.Table:
     properties:
@@ -268,6 +294,19 @@ paths:
       consumes:
       - application/json
       description: Get all menus
+      parameters:
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
       produces:
       - application/json
       responses:
@@ -444,7 +483,178 @@ paths:
       - BearerAuth: []
       summary: Reset Password
       tags:
-      - Auth
+      - User
+  /restaurants:
+    get:
+      description: Get all restaurants
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: GetRestaurants
+      tags:
+      - Global
+    post:
+      consumes:
+      - application/json
+      description: Create a restaurant
+      parameters:
+      - description: Restaurant Object
+        in: body
+        name: restaurant
+        required: true
+        schema:
+          $ref: '#/definitions/types.Restaurant'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: CreateRestaurant
+      tags:
+      - Admin
+  /restaurants/{id}:
+    delete:
+      description: Delete a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: DeleteRestaurant
+      tags:
+      - Admin
+    get:
+      description: Get a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: GetRestaurant
+      tags:
+      - Global
+    put:
+      consumes:
+      - application/json
+      description: Update a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Restaurant Object
+        in: body
+        name: restaurant
+        required: true
+        schema:
+          $ref: '#/definitions/types.Restaurant'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: UpdateRestaurant
+      tags:
+      - Admin
+  /restaurants/menus/{id}:
+    get:
+      description: Get all menus by restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: MenuByRestaurant
+      tags:
+      - Global
+  /restaurants/rating/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Add rating to a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Rating Object
+        in: body
+        name: rating
+        required: true
+        schema:
+          $ref: '#/definitions/types.Rating'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: AddRatingtoRestaurant
+      tags:
+      - User
   /table:
     get:
       consumes:
@@ -569,16 +779,28 @@ paths:
       tags:
       - Admin
   /users:
-    post:
+    get:
       consumes:
       - application/json
-      description: Create a new user
+      description: Get all users
       parameters:
       - description: Token
         in: header
         name: Authorization
         required: true
         type: string
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
       produces:
       - application/json
       responses:
@@ -592,7 +814,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Create User
+      summary: Get all Users
       tags:
       - Admin
   /users/{id}:

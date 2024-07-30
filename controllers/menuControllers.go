@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/ShahSau/culinary-bliss/database"
@@ -21,30 +23,57 @@ var menuCollection *mongo.Collection = database.GetCollection(database.DB, "menu
 // @Tags Global
 // @Accept json
 // @Produce json
+// @Param 		 recordPerPage query int false "Record Per Page"
+// @Param 		 page query int false "Page"
+// @Param 		 startIndex query int false "Start Index"
 // @Success 200 {object} string
 // @Failure 500 {object} string
 // @Router /menu [get]
 func GetMenus(c *gin.Context) {
-	menus, err := menuCollection.Find(c.Request.Context(), bson.M{}, nil)
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	recordPerPage, err := strconv.Atoi(c.Query("recordPerPage"))
+	if err != nil || recordPerPage < 1 {
+		recordPerPage = 10
+	}
+
+	page, errp := strconv.Atoi(c.Query("page"))
+	if errp != nil || page < 1 {
+		page = 1
+	}
+
+	startIndex := (page - 1) * recordPerPage
+	startIndex, err = strconv.Atoi(c.Query("startIndex"))
+
+	matchStage := bson.D{{Key: "$match", Value: bson.D{{}}}}
+	projectStage := bson.D{
+		{
+			Key: "$project", Value: bson.D{
+				{Key: "id", Value: 1},
+				{Key: "name", Value: 1},
+				{Key: "description", Value: 1},
+				{Key: "start_date", Value: 1},
+				{Key: "end_date", Value: 1},
+				{Key: "menu_id", Value: 1},
+			},
+		},
+	}
+
+	record := bson.D{{Key: "$skip", Value: recordPerPage * (page - 1)}}
+	limit := bson.D{{Key: "$limit", Value: recordPerPage}}
+
+	result, errAgg := menuCollection.Aggregate(c.Request.Context(), mongo.Pipeline{matchStage, projectStage, record, limit})
+
+	if errAgg != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errAgg.Error()})
 		return
 	}
 
-	defer menus.Close(c.Request.Context())
-
-	var results []models.Menu
-
-	for menus.Next(c.Request.Context()) {
-		var menu models.Menu
-		if err = menus.Decode(&menu); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": true, "message": err.Error()})
-		}
-		results = append(results, menu)
+	var allMenus []bson.M
+	if err = result.All(c.Request.Context(), &allMenus); err != nil {
+		log.Fatal(err)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Menu retrived successfully", "data": results, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"data": allMenus, "page": page, "recordPerPage": recordPerPage, "startIndex": startIndex})
 
 }
 
