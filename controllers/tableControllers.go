@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ShahSau/culinary-bliss/helpers"
+	"github.com/ShahSau/culinary-bliss/types"
+
 	"github.com/ShahSau/culinary-bliss/database"
 	"github.com/ShahSau/culinary-bliss/models"
 	"github.com/gin-gonic/gin"
@@ -15,6 +18,14 @@ import (
 
 var tableCollection *mongo.Collection = database.GetCollection(database.DB, "tables")
 
+// @Summary Get all tables
+// @Description Get all tables
+// @Tags Global
+// @Accept json
+// @Produce json
+// @Success 200 {object} string
+// @Failure 500 {object} string
+// @Router /table [get]
 func GetTables(c *gin.Context) {
 	tables, err := tableCollection.Find(c.Request.Context(), bson.M{}, nil)
 
@@ -38,13 +49,17 @@ func GetTables(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table retrived successfully", "data": results, "status": http.StatusOK, "success": true})
 }
 
+// @Summary Get a table
+// @Description Get a table
+// @Tags Global
+// @Accept json
+// @Produce json
+// @Param id path string true "Table ID"
+// @Success 200 {object} string
+// @Failure 500 {object} string
+// @Router /table/{id} [get]
 func GetTable(c *gin.Context) {
 	table_id := c.Param("id")
-
-	if err := c.ShouldBindJSON(&table_id); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 
 	var table models.Table
 
@@ -60,23 +75,45 @@ func GetTable(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table retrived successfully", "data": table, "status": http.StatusOK, "success": true})
 }
 
+// @Summary Create a table
+// @Description Create a table
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param table body types.Table true "Table"
+// @Success 201 {object} string
+// @Failure 400 {object} string
+// @Router /table [post]
 func CreateTable(c *gin.Context) {
-	var tableReq models.Table
+	var tableReq types.Table
 
 	if err := c.ShouldBindJSON(&tableReq); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
+
 	defer c.Request.Body.Close()
 
-	tableReq.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	tableReq.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	var newTable models.Table
 
-	tableReq.ID = primitive.NewObjectID()
-	tableReq.Table_id = tableReq.ID.Hex()
+	newTable.Number_of_guests = tableReq.Number_of_guests
+	newTable.Table_number = tableReq.Table_number
+	newTable.Table_status = tableReq.Table_status
+	newTable.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	newTable.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
-	_, err := tableCollection.InsertOne(c.Request.Context(), tableReq)
+	newTable.ID = primitive.NewObjectID()
+	newTable.Table_id = newTable.ID.Hex()
+
+	_, err := tableCollection.InsertOne(c.Request.Context(), newTable)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -87,8 +124,18 @@ func CreateTable(c *gin.Context) {
 
 }
 
+// @Summary Update a table
+// @Description Update a table
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param id path string true "Table ID"
+// @Param table body types.Table true "Table"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Router /table/{id} [put]
 func UpdateTable(c *gin.Context) {
-	var table models.Table
+	var table types.Table
 	table_id := c.Param("id")
 
 	if err := c.ShouldBindJSON(&table); err != nil {
@@ -96,37 +143,51 @@ func UpdateTable(c *gin.Context) {
 		return
 	}
 
-	var updateObj primitive.D
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
 
-	if table.Number_of_guests != 0 {
-		updateObj = append(updateObj, bson.E{Key: "number_of_guests", Value: table.Number_of_guests})
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
 	}
 
-	if table.Table_number != 0 {
-		updateObj = append(updateObj, bson.E{Key: "table_number", Value: table.Table_number})
-	}
+	defer c.Request.Body.Close()
 
-	table.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	var updatedTable models.Table
 
-	updateObj = append(updateObj, bson.E{Key: "updated_at", Value: table.UpdatedAt})
+	err := tableCollection.FindOne(c.Request.Context(), bson.M{"table_id": table_id}).Decode(&updatedTable)
 
-	_, err := tableCollection.UpdateOne(c.Request.Context(), bson.M{"table_id": table_id}, bson.D{{Key: "$set", Value: updateObj}})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table updated successfully", "status": http.StatusOK, "success": true})
+	updatedTable.Number_of_guests = table.Number_of_guests
+	updatedTable.Table_number = table.Table_number
+	updatedTable.Table_status = table.Table_status
+	updatedTable.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+
+	_, err = tableCollection.UpdateOne(c.Request.Context(), bson.M{"table_id": table_id}, bson.D{{Key: "$set", Value: updatedTable}})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table updated successfully", "status": http.StatusOK, "success": true, "data": updatedTable})
 
 }
 
+// @Summary Delete a table
+// @Description Delete a table
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param id path string true "Table ID"
+// @Success 200 {object} string
+// @Failure 500 {object} string
+// @Router /table/{id} [delete]
 func DeleteTable(c *gin.Context) {
 	table_id := c.Param("id")
-
-	if err := c.ShouldBindJSON(&table_id); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 
 	_, err := tableCollection.DeleteOne(c.Request.Context(), bson.M{"table_id": table_id})
 

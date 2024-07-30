@@ -9,7 +9,7 @@ import (
 func Authtication(c *gin.Context) {
 	clientToken := c.Request.Header.Get("Authorization")
 	if clientToken == "" {
-		c.JSON(403, gin.H{"error": "No Authorization header provided"})
+		c.JSON(403, gin.H{"error": "No Authorization header provided, Please login"})
 		c.Abort()
 		return
 	}

@@ -24,18 +24,20 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	routes.UserRoutes(router)
-
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Swagger docs
 	docs.SwaggerInfo.Title = "Culinary Bliss API"
 	docs.SwaggerInfo.Description = "Culinary Bliss restaurant management app designed to streamline your operations and elevate your dining experience and for efficient, effective, and effortless restaurant management."
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "https://culinary-bliss.onrender.com"
+	// docs.SwaggerInfo.Host = "https://culinary-bliss.onrender.com"
+	docs.SwaggerInfo.Host = "localhost:8080"
 
+	routes.AuthRoutes(router)
+	routes.GlobalRoutes(router)
 	router.Use(middleware.Authtication)
 
+	routes.UserRoutes(router)
 	routes.FoodRoutes(router)
 	routes.MenuRoutes(router)
 	routes.InvoiceRoutes(router)

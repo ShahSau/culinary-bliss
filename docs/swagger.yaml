@@ -1,4 +1,1262 @@
+definitions:
+  models.Food:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      food_id:
+        type: string
+      image:
+        type: string
+      menu_id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      updated_at:
+        type: string
+    required:
+    - description
+    - image
+    - menu_id
+    - name
+    - price
+    type: object
+  models.Order:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      order_date:
+        type: string
+      order_id:
+        type: string
+      order_status:
+        type: string
+      table_id:
+        type: string
+      total_amount:
+        type: number
+      updated_at:
+        type: string
+    required:
+    - order_status
+    - table_id
+    - total_amount
+    type: object
+  types.Category:
+    properties:
+      image:
+        type: string
+      title:
+        type: string
+    type: object
+  types.Loginuser:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  types.Menu:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  types.PasswordReset:
+    properties:
+      email:
+        type: string
+      new_password:
+        type: string
+      old_password:
+        type: string
+    required:
+    - email
+    - new_password
+    - old_password
+    type: object
+  types.Rating:
+    properties:
+      rating:
+        type: number
+    type: object
+  types.RegisterUser:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    - phone
+    type: object
+  types.Restaurant:
+    properties:
+      delivery:
+        type: boolean
+      image:
+        type: string
+      menu:
+        items:
+          type: string
+        type: array
+      pickup:
+        type: boolean
+      rating:
+        type: number
+      ratingCount:
+        type: integer
+      time:
+        type: string
+      title:
+        type: string
+    type: object
+  types.Table:
+    properties:
+      number_of_guests:
+        type: integer
+      table_number:
+        type: integer
+      table_status:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /categeory/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a category
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a category
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get a category
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a category
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update a category
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/types.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a category
+      tags:
+      - Admin
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: Get all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all categories
+      tags:
+      - Global
+    post:
+      consumes:
+      - application/json
+      description: Create a category
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/types.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a category
+      tags:
+      - Admin
+  /food:
+    post:
+      consumes:
+      - application/json
+      description: Create Food
+      parameters:
+      - description: Food Object
+        in: body
+        name: food
+        required: true
+        schema:
+          $ref: '#/definitions/models.Food'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create Food
+      tags:
+      - Admin
+  /food/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Food
+      parameters:
+      - description: Food ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Delete Food
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get Food
+      parameters:
+      - description: Food ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get Food
+      tags:
+      - Global
+    put:
+      consumes:
+      - application/json
+      description: Update Food
+      parameters:
+      - description: Food ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Food Object
+        in: body
+        name: food
+        required: true
+        schema:
+          $ref: '#/definitions/models.Food'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Update Food
+      tags:
+      - Admin
+  /foods:
+    get:
+      description: Get all foods
+      parameters:
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: GetFoods
+      tags:
+      - Global
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: user can login by giving their email and password
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/types.Loginuser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: User Login
+      tags:
+      - Auth
+  /logout:
+    post:
+      consumes:
+      - application/json
+      description: user can logout by giving their user_id
+      parameters:
+      - description: User ID
+        in: body
+        name: user_id
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: User Logout
+      tags:
+      - Auth
+  /menu:
+    get:
+      consumes:
+      - application/json
+      description: Get all menus
+      parameters:
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all menus
+      tags:
+      - Global
+    post:
+      consumes:
+      - application/json
+      description: Create a menu
+      parameters:
+      - description: Menu object
+        in: body
+        name: menu
+        required: true
+        schema:
+          $ref: '#/definitions/types.Menu'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a menu
+      tags:
+      - Admin
+  /menu/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a menu
+      parameters:
+      - description: Menu ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a menu
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get a menu
+      parameters:
+      - description: Menu ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a menu
+      tags:
+      - Global
+    put:
+      consumes:
+      - application/json
+      description: Update a menu
+      parameters:
+      - description: Menu ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Menu object
+        in: body
+        name: menu
+        required: true
+        schema:
+          $ref: '#/definitions/types.Menu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a menu
+      tags:
+      - Admin
+  /order:
+    post:
+      consumes:
+      - application/json
+      description: Create a order
+      parameters:
+      - description: Table ID
+        in: body
+        name: table_id
+        required: true
+        schema:
+          type: string
+      - description: Order Status
+        in: body
+        name: order_status
+        required: true
+        schema:
+          type: string
+      - description: Total Amount
+        in: body
+        name: total_amount
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a order
+      tags:
+      - User
+  /order/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a order
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a order
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Table ID
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a order
+      tags:
+      - Admin
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: Get all orders
+      parameters:
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all orders
+      tags:
+      - Admin
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: user can signup by giving their details
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/types.RegisterUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: User Signup
+      tags:
+      - Auth
+  /reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset user password
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/types.PasswordReset'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Reset Password
+      tags:
+      - User
+  /restaurants:
+    get:
+      description: Get all restaurants
+      parameters:
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: GetRestaurants
+      tags:
+      - Global
+    post:
+      consumes:
+      - application/json
+      description: Create a restaurant
+      parameters:
+      - description: Restaurant Object
+        in: body
+        name: restaurant
+        required: true
+        schema:
+          $ref: '#/definitions/types.Restaurant'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: CreateRestaurant
+      tags:
+      - Admin
+  /restaurants/{id}:
+    delete:
+      description: Delete a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: DeleteRestaurant
+      tags:
+      - Admin
+    get:
+      description: Get a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: GetRestaurant
+      tags:
+      - Global
+    put:
+      consumes:
+      - application/json
+      description: Update a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Restaurant Object
+        in: body
+        name: restaurant
+        required: true
+        schema:
+          $ref: '#/definitions/types.Restaurant'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: UpdateRestaurant
+      tags:
+      - Admin
+  /restaurants/menus/{id}:
+    get:
+      description: Get all menus by restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: MenuByRestaurant
+      tags:
+      - Global
+  /restaurants/rating/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Add rating to a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Rating Object
+        in: body
+        name: rating
+        required: true
+        schema:
+          $ref: '#/definitions/types.Rating'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: AddRatingtoRestaurant
+      tags:
+      - User
+  /table:
+    get:
+      consumes:
+      - application/json
+      description: Get all tables
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all tables
+      tags:
+      - Global
+    post:
+      consumes:
+      - application/json
+      description: Create a table
+      parameters:
+      - description: Table
+        in: body
+        name: table
+        required: true
+        schema:
+          $ref: '#/definitions/types.Table'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create a table
+      tags:
+      - Admin
+  /table/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a table
+      parameters:
+      - description: Table ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a table
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get a table
+      parameters:
+      - description: Table ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a table
+      tags:
+      - Global
+    put:
+      consumes:
+      - application/json
+      description: Update a table
+      parameters:
+      - description: Table ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Table
+        in: body
+        name: table
+        required: true
+        schema:
+          $ref: '#/definitions/types.Table'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Update a table
+      tags:
+      - Admin
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get all Users
+      tags:
+      - Admin
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete User
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get a user Details by ID
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get a  User
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update user details
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/types.RegisterUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update User
+      tags:
+      - User
 swagger: "2.0"

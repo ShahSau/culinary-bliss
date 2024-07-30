@@ -10,8 +10,5 @@ func UserRoutes(c *gin.Engine) {
 	c.GET("/users/:id", controllers.GetUser)
 	c.PUT("/users/:id", controllers.UpdateUser)
 	c.DELETE("/users/:id", controllers.DeleteUser)
-	c.POST("/login", controllers.Login)
-	c.POST("/register", controllers.Register)
-	c.POST("/logout", controllers.Logout)
 	c.POST("/reset-password", controllers.ResetPassword)
 }

@@ -6,10 +6,9 @@ import (
 )
 
 func RestaurantRoutes(c *gin.Engine) {
-	c.GET("/restaurants", controllers.GetRestaurants)
-	c.GET("/restaurants/:id", controllers.GetRestaurant)
 	c.POST("/restaurants", controllers.CreateRestaurant)
 	c.PUT("/restaurants/:id", controllers.UpdateRestaurant)
 	c.DELETE("/restaurants/:id", controllers.DeleteRestaurant)
+	c.PUT("/restaurants/rating/:id", controllers.AddRatingtoRestaurant)
 
 }

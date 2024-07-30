@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"math"
 	"net/http"
 	"strconv"
@@ -16,56 +17,72 @@ import (
 
 var foodCollection *mongo.Collection = database.GetCollection(database.DB, "food")
 
+// @Summary GetFoods
+// @Description Get all foods
+// @Tags Global
+// @Produce json
+// @Param 		 recordPerPage query int false "Record Per Page"
+// @Param 		 page query int false "Page"
+// @Param 		 startIndex query int false "Start Index"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Router /foods [get]
 func GetFoods(c *gin.Context) {
-
 	recordPerPage, err := strconv.Atoi(c.Query("recordPerPage"))
 	if err != nil || recordPerPage < 1 {
 		recordPerPage = 10
 	}
 
-	page, err := strconv.Atoi(c.Query("page"))
-	if err != nil || page < 1 {
+	page, errp := strconv.Atoi(c.Query("page"))
+	if errp != nil || page < 1 {
 		page = 1
 	}
 
 	startIndex := (page - 1) * recordPerPage
-
-	_, err = strconv.Atoi(c.Query("startIndex"))
+	startIndex, err = strconv.Atoi(c.Query("startIndex"))
 
 	matchStage := bson.D{{Key: "$match", Value: bson.D{{}}}}
-	groupStage := bson.D{
-		{Key: "$group", Value: bson.D{
-			{Key: "_id", Value: "null"},
-		}},
-		{Key: "count", Value: bson.D{
-			{Key: "$sum", Value: 1},
-		}},
-		{Key: "data", Value: bson.D{
-			{Key: "$push", Value: "$$ROOT"},
-		}},
-	}
 	projectStage := bson.D{
 		{
 			Key: "$project", Value: bson.D{
-				{Key: "_id", Value: 0},
-				{Key: "count", Value: 1},
-				{Key: "food_items", Value: bson.D{{Key: "$slice", Value: []interface{}{"$data", startIndex, recordPerPage}}}},
+				{Key: "id", Value: 1},
+				{Key: "name", Value: 1},
+				{Key: "image", Value: 1},
+				{Key: "description", Value: 1},
+				{Key: "price", Value: 1},
+				{Key: "menu_id", Value: 1},
 			},
 		},
 	}
 
-	_, errAgg := foodCollection.Aggregate(c.Request.Context(), mongo.Pipeline{matchStage, groupStage, projectStage})
+	record := bson.D{{Key: "$skip", Value: recordPerPage * (page - 1)}}
+	limit := bson.D{{Key: "$limit", Value: recordPerPage}}
+
+	result, errAgg := foodCollection.Aggregate(c.Request.Context(), mongo.Pipeline{matchStage, projectStage, record, limit})
 
 	if errAgg != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errAgg.Error()})
 		return
 	}
 
-	var results []bson.M
+	var allFoods []bson.M
+	if err = result.All(c.Request.Context(), &allFoods); err != nil {
+		log.Fatal(err)
+	}
 
-	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Food retrived successfully", "data": results[0], "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"data": allFoods, "page": page, "recordPerPage": recordPerPage, "startIndex": startIndex})
+
 }
 
+// @Summary Get Food
+// @Description Get Food
+// @Tags Global
+// @Accept json
+// @Produce json
+// @Param id path string true "Food ID"
+// @Success 200 {object}  string
+// @Failure 400 {object} string
+// @Router /food/{id} [get]
 func GetFood(c *gin.Context) {
 	var foodID = c.Param("id")
 
@@ -89,6 +106,15 @@ func GetFood(c *gin.Context) {
 	})
 }
 
+// @Summary Create Food
+// @Description Create Food
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param food body models.Food true "Food Object"
+// @Success 201 {object} string
+// @Failure 400 {object} string
+// @Router /food [post]
 func CreateFood(c *gin.Context) {
 	var reqfood models.Food
 
@@ -113,15 +139,15 @@ func CreateFood(c *gin.Context) {
 
 	food.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	food.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	food.Food_id = reqfood.Food_id
 	food.Name = reqfood.Name
 	food.Description = reqfood.Description
 	food.Price = toFixed(reqfood.Price, 2)
 	food.Image = reqfood.Image
 	food.Menu_id = reqfood.Menu_id
 	food.ID = primitive.NewObjectID()
+	food.Food_id = food.ID.Hex()
 
-	foodCreated, err := foodCollection.InsertOne(c.Request.Context(), food)
+	_, err = foodCollection.InsertOne(c.Request.Context(), food)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -129,7 +155,7 @@ func CreateFood(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusAccepted, gin.H{
-		"data":    foodCreated,
+		"data":    food,
 		"error":   false,
 		"succes":  true,
 		"message": "Food created successfully",
@@ -137,6 +163,16 @@ func CreateFood(c *gin.Context) {
 	})
 }
 
+// @Summary Update Food
+// @Description Update Food
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param id path string true "Food ID"
+// @Param food body models.Food true "Food Object"
+// @Success 202 {object} string
+// @Failure 400 {object} string
+// @Router /food/{id} [put]
 func UpdateFood(c *gin.Context) {
 	var menu models.Menu
 	var food models.Food
@@ -198,6 +234,15 @@ func UpdateFood(c *gin.Context) {
 
 }
 
+// @Summary Delete Food
+// @Description Delete Food
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param id path string true "Food ID"
+// @Success 202 {object} string
+// @Failure 400 {object} string
+// @Router /food/{id} [delete]
 func DeleteFood(c *gin.Context) {
 	foodId := c.Param("id")
 
