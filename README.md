@@ -39,7 +39,7 @@
 
 ##  Overview
 
-HTTP error 401 for prompt `overview`
+Welcome to the restaurant management backen! This repository contains a robust and scalable backend system built using Go and the Gin framework, designed to support a comprehensive restaurant management platform. The system is structured to provide secure authentication, user management, and administrative functionalities, ensuring a seamless and efficient operation of a restaurant.
 
 ---
 
