@@ -26,6 +26,34 @@ definitions:
     - name
     - price
     type: object
+  models.Invoice:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      invoice_id:
+        type: string
+      order_id:
+        type: string
+      payment_due_date:
+        type: string
+      payment_method:
+        type: string
+      payment_status:
+        type: string
+      total_amount:
+        type: number
+      updated_at:
+        type: string
+    required:
+    - invoice_id
+    - order_id
+    - payment_due_date
+    - payment_method
+    - payment_status
+    - total_amount
+    type: object
   models.Order:
     properties:
       _id:
@@ -54,6 +82,13 @@ definitions:
       image:
         type: string
       title:
+        type: string
+    type: object
+  types.Invoice:
+    properties:
+      order_id:
+        type: string
+      payment_method:
         type: string
     type: object
   types.Loginuser:
@@ -422,6 +457,129 @@ paths:
       summary: GetFoods
       tags:
       - Global
+  /invoice:
+    get:
+      consumes:
+      - application/json
+      description: Get Invoices
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Invoice'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get Invoices
+      tags:
+      - Admin
+    post:
+      consumes:
+      - application/json
+      description: Create Invoice
+      parameters:
+      - description: Invoice
+        in: body
+        name: invoice
+        required: true
+        schema:
+          $ref: '#/definitions/types.Invoice'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Invoice'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create Invoice
+      tags:
+      - User
+  /invoice/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Invoice
+      parameters:
+      - description: Invoice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Delete Invoice
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get Invoice
+      parameters:
+      - description: Invoice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Invoice'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get Invoice
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update Invoice
+      parameters:
+      - description: Invoice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Invoice
+        in: body
+        name: invoice
+        required: true
+        schema:
+          $ref: '#/definitions/types.Invoice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Invoice'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Update Invoice
+      tags:
+      - User
   /login:
     post:
       consumes:

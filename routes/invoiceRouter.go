@@ -6,9 +6,9 @@ import (
 )
 
 func InvoiceRoutes(c *gin.Engine) {
-	c.GET("/invoice", controllers.GetInvoices)
+	c.GET("/invoice", controllers.GetInvoices) //admin
 	c.GET("/invoice/:id", controllers.GetInvoice)
 	c.POST("/invoice", controllers.CreateInvoice)
-	c.PUT("/invoice/:id", controllers.UpdateInvoice)
-	c.DELETE("/invoice/:id", controllers.DeleteInvoice)
+	c.PUT("/invoice/:id", controllers.UpdateInvoice)    //admin
+	c.DELETE("/invoice/:id", controllers.DeleteInvoice) //admin
 }

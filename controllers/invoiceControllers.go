@@ -6,6 +6,7 @@ import (
 
 	"github.com/ShahSau/culinary-bliss/database"
 	"github.com/ShahSau/culinary-bliss/models"
+	"github.com/ShahSau/culinary-bliss/types"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -25,6 +26,14 @@ type InvoiceViewFormat struct {
 
 var invoiceCollection *mongo.Collection = database.GetCollection(database.DB, "invoice")
 
+// @Summary Get Invoices
+// @Description Get Invoices
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Invoice
+// @Failure 400 {object} string
+// @Router /invoice [get]
 func GetInvoices(c *gin.Context) {
 	invoices, err := invoiceCollection.Find(c.Request.Context(), bson.M{}, nil)
 
@@ -48,6 +57,15 @@ func GetInvoices(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Invoice retrived successfully", "data": results, "status": http.StatusOK, "success": true})
 }
 
+// @Summary Get Invoice
+// @Description Get Invoice
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path string true "Invoice ID"
+// @Success 200 {object} models.Invoice
+// @Failure 400 {object} string
+// @Router /invoice/{id} [get]
 func GetInvoice(c *gin.Context) {
 	var invoiceID = c.Param("id")
 
@@ -62,53 +80,48 @@ func GetInvoice(c *gin.Context) {
 		return
 	}
 
-	var invoiceView InvoiceViewFormat
-
-	allOrders, err := ItemsByOrder(invoice.Order_id)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	invoiceView.Order_id = invoice.Order_id
-	invoiceView.Paymenet_due_date = invoice.Payment_due_date
-
-	invoiceView.Payment_method = invoice.Payment_method
-	invoiceView.Payment_status = invoice.Payment_status
-	invoiceView.Invoice_id = invoice.Invoice_id
-	invoiceView.Payment_due = allOrders[0]["payment_due"]
-	invoiceView.Table_number = allOrders[0]["table_number"]
-	invoiceView.Order_details = allOrders[0]["order_items"]
-
-	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Invoice retrieved successfully", "data": invoiceView, "status": http.StatusOK, "success": true})
+	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Invoice retrieved successfully", "data": invoice, "status": http.StatusOK, "success": true})
 }
 
+// @Summary Create Invoice
+// @Description Create Invoice
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param invoice body types.Invoice true "Invoice"
+// @Success 201 {object} models.Invoice
+// @Failure 400 {object} string
+// @Router /invoice [post]
 func CreateInvoice(c *gin.Context) {
-	var invoice models.Invoice
+	var reqInvoice types.Invoice
 
-	if err := c.ShouldBindJSON(&invoice); err != nil {
+	if err := c.ShouldBindJSON(&reqInvoice); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	defer c.Request.Body.Close()
-	var orderCollection *mongo.Collection = database.GetCollection(database.DB, "order")
+	var orderCollection *mongo.Collection = database.GetCollection(database.DB, "orders")
 
 	var order models.Order
 
-	err := orderCollection.FindOne(c.Request.Context(), bson.M{"order_id": invoice.Order_id}).Decode(&order)
+	err := orderCollection.FindOne(c.Request.Context(), bson.M{"order_id": reqInvoice.Order_id}).Decode(&order)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error() + " Order not found"})
 		return
 	}
 
+	var invoice models.Invoice
+	invoice.Order_id = reqInvoice.Order_id
+	invoice.Payment_method = reqInvoice.Payment_method
+	invoice.Payment_status = "PENDING"
 	invoice.Payment_due_date, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	invoice.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	invoice.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	invoice.ID = primitive.NewObjectID()
 	invoice.Invoice_id = invoice.ID.Hex()
+	invoice.Total_amount = order.Total_amount
 
 	_, err = invoiceCollection.InsertOne(c.Request.Context(), invoice)
 
@@ -121,42 +134,58 @@ func CreateInvoice(c *gin.Context) {
 
 }
 
+// @Summary Update Invoice
+// @Description Update Invoice
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path string true "Invoice ID"
+// @Param invoice body types.Invoice true "Invoice"
+// @Success 200 {object} models.Invoice
+// @Failure 400 {object} string
+// @Router /invoice/{id} [put]
 func UpdateInvoice(c *gin.Context) {
 	var invoiceID = c.Param("id")
 
-	var invoice models.Invoice
+	var reqinvoice types.Invoice
 
-	if err := c.ShouldBindJSON(&invoice); err != nil {
+	if err := c.ShouldBindJSON(&reqinvoice); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	defer c.Request.Body.Close()
 
+	var invoice models.Invoice
 	err := invoiceCollection.FindOne(c.Request.Context(), bson.M{"invoice_id": invoiceID}).Decode(&invoice)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error() + " Invoice not found"})
 		return
 	}
 
-	var updateObj primitive.D
+	var orderCollection *mongo.Collection = database.GetCollection(database.DB, "orders")
 
-	if invoice.Payment_method != "" {
-		updateObj = append(updateObj, bson.E{Key: "payment_method", Value: invoice.Payment_method})
+	var order models.Order
+
+	err = orderCollection.FindOne(c.Request.Context(), bson.M{"order_id": invoice.Order_id}).Decode(&order)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error() + " Order not found"})
+		return
 	}
 
-	if invoice.Payment_status != "" {
-		updateObj = append(updateObj, bson.E{Key: "payment_status", Value: invoice.Payment_status})
-	}
+	var updateObj models.Invoice
 
-	if invoice.Order_id != "" {
-		updateObj = append(updateObj, bson.E{Key: "order_id", Value: invoice.Order_id})
-	}
-
-	invoice.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-
-	updateObj = append(updateObj, bson.E{Key: "updated_at", Value: invoice.UpdatedAt})
+	updateObj.Order_id = reqinvoice.Order_id
+	updateObj.Payment_method = reqinvoice.Payment_method
+	updateObj.Payment_status = "PENDING"
+	updateObj.Payment_due_date, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	updateObj.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	updateObj.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	updateObj.ID = invoice.ID
+	updateObj.Invoice_id = invoice.Invoice_id
+	updateObj.Total_amount = order.Total_amount
 
 	_, err = invoiceCollection.UpdateOne(c.Request.Context(), bson.M{"invoice_id": invoiceID}, bson.D{{Key: "$set", Value: updateObj}})
 
@@ -169,6 +198,15 @@ func UpdateInvoice(c *gin.Context) {
 
 }
 
+// @Summary Delete Invoice
+// @Description Delete Invoice
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param id path string true "Invoice ID"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Router /invoice/{id} [delete]
 func DeleteInvoice(c *gin.Context) {
 	var invoiceID = c.Param("id")
 
