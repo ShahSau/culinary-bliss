@@ -33,7 +33,7 @@ func main() {
 	docs.SwaggerInfo.Host = "https://culinary-bliss.onrender.com"
 
 	routes.AuthRoutes(router)
-
+	routes.GlobalRoutes(router)
 	router.Use(middleware.Authtication)
 
 	routes.UserRoutes(router)

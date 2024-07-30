@@ -1,4 +1,11 @@
 definitions:
+  types.Category:
+    properties:
+      image:
+        type: string
+      title:
+        type: string
+    type: object
   types.Loginuser:
     properties:
       email:
@@ -41,9 +48,162 @@ definitions:
     - password
     - phone
     type: object
+  types.Table:
+    properties:
+      number_of_guests:
+        type: integer
+      table_number:
+        type: integer
+      table_status:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
+  /categeory/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a category
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a category
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get a category
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a category
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update a category
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/types.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a category
+      tags:
+      - Admin
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: Get all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all categories
+      tags:
+      - Global
+    post:
+      consumes:
+      - application/json
+      description: Create a category
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/types.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a category
+      tags:
+      - Admin
   /login:
     post:
       consumes:
@@ -155,6 +315,75 @@ paths:
       summary: Reset Password
       tags:
       - Auth
+  /table:
+    get:
+      consumes:
+      - application/json
+      description: Get all tables
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all tables
+      tags:
+      - Global
+    post:
+      consumes:
+      - application/json
+      description: Create a table
+      parameters:
+      - description: Table
+        in: body
+        name: table
+        required: true
+        schema:
+          $ref: '#/definitions/types.Table'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create a table
+      tags:
+      - Admin
+  /table/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a table
+      parameters:
+      - description: Table ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a table
+      tags:
+      - Global
   /users:
     post:
       consumes:

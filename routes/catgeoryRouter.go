@@ -6,10 +6,9 @@ import (
 )
 
 func CatgeoryRoutes(c *gin.Engine) {
-	c.GET("/categories", controllers.GetRestaurants)
-	c.GET("/categeory/:id", controllers.GetRestaurant)
-	c.POST("/categories", controllers.CreateRestaurant)
-	c.PUT("/categeory/:id", controllers.UpdateRestaurant)
-	c.DELETE("/categeory/:id", controllers.DeleteRestaurant)
+	c.GET("/categeory/:id", controllers.GetCategory)
+	c.POST("/categories", controllers.CreateCategory)
+	c.PUT("/categeory/:id", controllers.UpdateCategory)
+	c.DELETE("/categeory/:id", controllers.DeleteCategory)
 
 }

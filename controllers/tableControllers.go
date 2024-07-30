@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ShahSau/culinary-bliss/helpers"
+	"github.com/ShahSau/culinary-bliss/types"
+
 	"github.com/ShahSau/culinary-bliss/database"
 	"github.com/ShahSau/culinary-bliss/models"
 	"github.com/gin-gonic/gin"
@@ -15,6 +18,14 @@ import (
 
 var tableCollection *mongo.Collection = database.GetCollection(database.DB, "tables")
 
+// @Summary Get all tables
+// @Description Get all tables
+// @Tags Global
+// @Accept json
+// @Produce json
+// @Success 200 {object} string
+// @Failure 500 {object} string
+// @Router /table [get]
 func GetTables(c *gin.Context) {
 	tables, err := tableCollection.Find(c.Request.Context(), bson.M{}, nil)
 
@@ -38,13 +49,17 @@ func GetTables(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table retrived successfully", "data": results, "status": http.StatusOK, "success": true})
 }
 
+// @Summary Get a table
+// @Description Get a table
+// @Tags Global
+// @Accept json
+// @Produce json
+// @Param id path string true "Table ID"
+// @Success 200 {object} string
+// @Failure 500 {object} string
+// @Router /table/{id} [get]
 func GetTable(c *gin.Context) {
 	table_id := c.Param("id")
-
-	if err := c.ShouldBindJSON(&table_id); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 
 	var table models.Table
 
@@ -60,23 +75,45 @@ func GetTable(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Table retrived successfully", "data": table, "status": http.StatusOK, "success": true})
 }
 
+// @Summary Create a table
+// @Description Create a table
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param table body types.Table true "Table"
+// @Success 201 {object} string
+// @Failure 400 {object} string
+// @Router /table [post]
 func CreateTable(c *gin.Context) {
-	var tableReq models.Table
+	var tableReq types.Table
 
 	if err := c.ShouldBindJSON(&tableReq); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
+
 	defer c.Request.Body.Close()
 
-	tableReq.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	tableReq.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	var newTable models.Table
 
-	tableReq.ID = primitive.NewObjectID()
-	tableReq.Table_id = tableReq.ID.Hex()
+	newTable.Number_of_guests = tableReq.Number_of_guests
+	newTable.Table_number = tableReq.Table_number
+	newTable.Table_status = tableReq.Table_status
+	newTable.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	newTable.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
-	_, err := tableCollection.InsertOne(c.Request.Context(), tableReq)
+	newTable.ID = primitive.NewObjectID()
+	newTable.Table_id = newTable.ID.Hex()
+
+	_, err := tableCollection.InsertOne(c.Request.Context(), newTable)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

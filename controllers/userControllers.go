@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -69,7 +68,6 @@ func GetUsers(c *gin.Context) {
 
 	result, errAgg := userCollection.Aggregate(c.Request.Context(), mongo.Pipeline{matchStage, projectStage, record, limit})
 
-	fmt.Println(result)
 	if errAgg != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errAgg.Error()})
 		return
