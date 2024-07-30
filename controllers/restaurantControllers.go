@@ -21,6 +21,9 @@ var restaurantCollection *mongo.Collection = database.GetCollection(database.DB,
 // @Description Get all restaurants
 // @Tags Global
 // @Produce json
+// @Param 		 recordPerPage query int false "Record Per Page"
+// @Param 		 page query int false "Page"
+// @Param 		 startIndex query int false "Start Index"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Router /restaurants [get]

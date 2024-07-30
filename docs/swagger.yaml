@@ -1,4 +1,54 @@
 definitions:
+  models.Food:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      food_id:
+        type: string
+      image:
+        type: string
+      menu_id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      updated_at:
+        type: string
+    required:
+    - description
+    - image
+    - menu_id
+    - name
+    - price
+    type: object
+  models.Order:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      order_date:
+        type: string
+      order_id:
+        type: string
+      order_status:
+        type: string
+      table_id:
+        type: string
+      total_amount:
+        type: number
+      updated_at:
+        type: string
+    required:
+    - order_status
+    - table_id
+    - total_amount
+    type: object
   types.Category:
     properties:
       image:
@@ -237,6 +287,141 @@ paths:
       summary: Create a category
       tags:
       - Admin
+  /food:
+    post:
+      consumes:
+      - application/json
+      description: Create Food
+      parameters:
+      - description: Food Object
+        in: body
+        name: food
+        required: true
+        schema:
+          $ref: '#/definitions/models.Food'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create Food
+      tags:
+      - Admin
+  /food/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Food
+      parameters:
+      - description: Food ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Delete Food
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get Food
+      parameters:
+      - description: Food ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get Food
+      tags:
+      - Global
+    put:
+      consumes:
+      - application/json
+      description: Update Food
+      parameters:
+      - description: Food ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Food Object
+        in: body
+        name: food
+        required: true
+        schema:
+          $ref: '#/definitions/models.Food'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Update Food
+      tags:
+      - Admin
+  /foods:
+    get:
+      description: Get all foods
+      parameters:
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: GetFoods
+      tags:
+      - Global
   /login:
     post:
       consumes:
@@ -425,6 +610,155 @@ paths:
       summary: Update a menu
       tags:
       - Admin
+  /order:
+    post:
+      consumes:
+      - application/json
+      description: Create a order
+      parameters:
+      - description: Table ID
+        in: body
+        name: table_id
+        required: true
+        schema:
+          type: string
+      - description: Order Status
+        in: body
+        name: order_status
+        required: true
+        schema:
+          type: string
+      - description: Total Amount
+        in: body
+        name: total_amount
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a order
+      tags:
+      - User
+  /order/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a order
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a order
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Table ID
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a order
+      tags:
+      - Admin
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: Get all orders
+      parameters:
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all orders
+      tags:
+      - Admin
   /register:
     post:
       consumes:
@@ -487,6 +821,19 @@ paths:
   /restaurants:
     get:
       description: Get all restaurants
+      parameters:
+      - description: Record Per Page
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Start Index
+        in: query
+        name: startIndex
+        type: integer
       produces:
       - application/json
       responses:
