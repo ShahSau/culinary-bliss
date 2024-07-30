@@ -107,6 +107,8 @@ func GetRestaurant(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param restaurant body types.Restaurant true "Restaurant Object"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -162,6 +164,8 @@ func CreateRestaurant(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Restaurant ID"
 // @Param restaurant body types.Restaurant true "Restaurant Object"
 // @Success 200 {object} string
@@ -237,6 +241,8 @@ func UpdateRestaurant(c *gin.Context) {
 // @Description Delete a restaurant
 // @Tags Admin
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Restaurant ID"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -266,8 +272,10 @@ func DeleteRestaurant(c *gin.Context) {
 
 // @Summary MenuByRestaurant
 // @Description Get all menus by restaurant
-// @Tags Global
+// @Tags User
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Restaurant ID"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -293,6 +301,8 @@ func MenuByRestaurant(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Restaurant ID"
 // @Param rating body types.Rating true "Rating Object"
 // @Success 200 {object} string

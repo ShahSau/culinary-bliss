@@ -23,6 +23,8 @@ var orderCollection *mongo.Collection = database.GetCollection(database.DB, "ord
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param 		 recordPerPage query int false "Record Per Page"
 // @Param 		 page query int false "Page"
 // @Param 		 startIndex query int false "Start Index"
@@ -87,6 +89,8 @@ func GetOrders(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Order ID"
 // @Success 200 {object} string
 // @Failure 500 {object} string
@@ -114,6 +118,8 @@ func GetOrder(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param table_id body string true "Table ID"
 // @Param order_status body string true "Order Status"
 // @Param total_amount body string true "Total Amount"
@@ -158,6 +164,8 @@ func CreateOrder(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Order ID"
 // @Param order body models.Order true "Table ID"
 // @Success 200 {object} string
@@ -197,6 +205,8 @@ func UpdateOrder(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Order ID"
 // @Success 200 {object} string
 // @Failure 500 {object} string

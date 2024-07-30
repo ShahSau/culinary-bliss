@@ -112,6 +112,8 @@ func GetFood(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param food body models.Food true "Food Object"
 // @Success 201 {object} string
 // @Failure 400 {object} string
@@ -177,6 +179,8 @@ func CreateFood(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Food ID"
 // @Param food body models.Food true "Food Object"
 // @Success 202 {object} string
@@ -255,6 +259,8 @@ func UpdateFood(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Food ID"
 // @Success 202 {object} string
 // @Failure 400 {object} string

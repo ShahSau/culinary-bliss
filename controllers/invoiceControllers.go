@@ -32,6 +32,8 @@ var invoiceCollection *mongo.Collection = database.GetCollection(database.DB, "i
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Success 200 {object} models.Invoice
 // @Failure 400 {object} string
 // @Router /invoice [get]
@@ -71,6 +73,8 @@ func GetInvoices(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Invoice ID"
 // @Success 200 {object} models.Invoice
 // @Failure 400 {object} string
@@ -97,6 +101,8 @@ func GetInvoice(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param invoice body types.Invoice true "Invoice"
 // @Success 201 {object} models.Invoice
 // @Failure 400 {object} string
@@ -148,6 +154,8 @@ func CreateInvoice(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Invoice ID"
 // @Param invoice body types.Invoice true "Invoice"
 // @Success 200 {object} models.Invoice
@@ -212,6 +220,8 @@ func UpdateInvoice(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Invoice ID"
 // @Success 200 {object} string
 // @Failure 400 {object} string

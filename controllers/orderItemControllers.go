@@ -24,9 +24,11 @@ var orderItemCollection *mongo.Collection = database.GetCollection(database.DB, 
 
 // @Summary Get Order Items
 // @Description Get Order Items
-// @Tags Order Admin
+// @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Router /orderItems [get]
@@ -62,9 +64,11 @@ func GetOrderItems(c *gin.Context) {
 
 // @Summary Get Order Item
 // @Description Get Order Item
-// @Tags Order User
+// @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Order Item ID"
 // @Success 200 {object} models.OrderItem
 // @Failure 400 {object} string
@@ -87,9 +91,11 @@ func GetOrderItem(c *gin.Context) {
 
 // @Summary Create Order Item
 // @Description Create Order Item
-// @Tags Order User
+// @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param orderItem body models.OrderItem true "Order Item Object"
 // @Success 201 {object} models.OrderItem
 // @Failure 400 {object} string
@@ -120,9 +126,11 @@ func CreateOrderItem(c *gin.Context) {
 
 // @Summary Update Order Item
 // @Description Update Order Item
-// @Tags Order User
+// @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Order Item ID"
 // @Param orderItem body models.OrderItem true "Order Item Object"
 // @Success 200 {object} models.OrderItem
@@ -156,9 +164,11 @@ func UpdateOrderItem(c *gin.Context) {
 
 // @Summary Delete Order Item
 // @Description Delete Order Item
-// @Tags Order User
+// @Tags User
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Order Item ID"
 // @Success 200 {string} string	"Order Item deleted successfully"
 // @Failure 400 {object} string

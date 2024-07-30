@@ -115,6 +115,8 @@ func GetMenu(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param menu body types.Menu true "Menu object"
 // @Success 201 {object} string
 // @Failure 500 {object} string
@@ -162,6 +164,8 @@ func CreateMenu(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Menu ID"
 // @Param menu body types.Menu true "Menu object"
 // @Success 200 {object} string
@@ -215,6 +219,8 @@ func UpdateMenu(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Menu ID"
 // @Success 200 {object} string
 // @Failure 500 {object} string

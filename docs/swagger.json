@@ -6,6 +6,11 @@
     "paths": {
         "/categeory/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a category",
                 "consumes": [
                     "application/json"
@@ -23,6 +28,13 @@
                         "description": "Category ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -228,6 +240,11 @@
         },
         "/food": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create Food",
                 "consumes": [
                     "application/json"
@@ -240,6 +257,13 @@
                 ],
                 "summary": "Create Food",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Food Object",
                         "name": "food",
@@ -304,6 +328,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update Food",
                 "consumes": [
                     "application/json"
@@ -316,6 +345,13 @@
                 ],
                 "summary": "Update Food",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Food ID",
@@ -349,6 +385,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete Food",
                 "consumes": [
                     "application/json"
@@ -361,6 +402,13 @@
                 ],
                 "summary": "Delete Food",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Food ID",
@@ -433,6 +481,11 @@
         },
         "/invoice": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get Invoices",
                 "consumes": [
                     "application/json"
@@ -444,6 +497,15 @@
                     "Admin"
                 ],
                 "summary": "Get Invoices",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -460,6 +522,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create Invoice",
                 "consumes": [
                     "application/json"
@@ -472,6 +539,13 @@
                 ],
                 "summary": "Create Invoice",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Invoice",
                         "name": "invoice",
@@ -500,6 +574,11 @@
         },
         "/invoice/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get Invoice",
                 "consumes": [
                     "application/json"
@@ -512,6 +591,13 @@
                 ],
                 "summary": "Get Invoice",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Invoice ID",
@@ -536,6 +622,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update Invoice",
                 "consumes": [
                     "application/json"
@@ -548,6 +639,13 @@
                 ],
                 "summary": "Update Invoice",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Invoice ID",
@@ -581,6 +679,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete Invoice",
                 "consumes": [
                     "application/json"
@@ -593,6 +696,13 @@
                 ],
                 "summary": "Delete Invoice",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Invoice ID",
@@ -746,6 +856,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a menu",
                 "consumes": [
                     "application/json"
@@ -758,6 +873,13 @@
                 ],
                 "summary": "Create a menu",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Menu object",
                         "name": "menu",
@@ -822,6 +944,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a menu",
                 "consumes": [
                     "application/json"
@@ -834,6 +961,13 @@
                 ],
                 "summary": "Update a menu",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Menu ID",
@@ -867,6 +1001,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a menu",
                 "consumes": [
                     "application/json"
@@ -879,6 +1018,13 @@
                 ],
                 "summary": "Delete a menu",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Menu ID",
@@ -905,6 +1051,11 @@
         },
         "/order": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a order",
                 "consumes": [
                     "application/json"
@@ -917,6 +1068,13 @@
                 ],
                 "summary": "Create a order",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Table ID",
                         "name": "table_id",
@@ -963,6 +1121,11 @@
         },
         "/order/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a order",
                 "consumes": [
                     "application/json"
@@ -975,6 +1138,13 @@
                 ],
                 "summary": "Get a order",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order ID",
@@ -999,6 +1169,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a order",
                 "consumes": [
                     "application/json"
@@ -1011,6 +1186,13 @@
                 ],
                 "summary": "Update a order",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order ID",
@@ -1044,6 +1226,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a order",
                 "consumes": [
                     "application/json"
@@ -1056,6 +1243,13 @@
                 ],
                 "summary": "Delete a order",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order ID",
@@ -1082,6 +1276,11 @@
         },
         "/orderItem": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create Order Item",
                 "consumes": [
                     "application/json"
@@ -1090,10 +1289,17 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Order User"
+                    "User"
                 ],
                 "summary": "Create Order Item",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Order Item Object",
                         "name": "orderItem",
@@ -1122,6 +1328,11 @@
         },
         "/orderItem/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get Order Item",
                 "consumes": [
                     "application/json"
@@ -1130,10 +1341,17 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Order User"
+                    "User"
                 ],
                 "summary": "Get Order Item",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order Item ID",
@@ -1158,6 +1376,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update Order Item",
                 "consumes": [
                     "application/json"
@@ -1166,10 +1389,17 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Order User"
+                    "User"
                 ],
                 "summary": "Update Order Item",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order Item ID",
@@ -1203,6 +1433,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete Order Item",
                 "consumes": [
                     "application/json"
@@ -1211,10 +1446,17 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Order User"
+                    "User"
                 ],
                 "summary": "Delete Order Item",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order Item ID",
@@ -1241,6 +1483,11 @@
         },
         "/orderItems": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get Order Items",
                 "consumes": [
                     "application/json"
@@ -1249,9 +1496,18 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Order Admin"
+                    "Admin"
                 ],
                 "summary": "Get Order Items",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1270,6 +1526,11 @@
         },
         "/orders": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all orders",
                 "consumes": [
                     "application/json"
@@ -1282,6 +1543,13 @@
                 ],
                 "summary": "Get all orders",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Record Per Page",
@@ -1455,6 +1723,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a restaurant",
                 "consumes": [
                     "application/json"
@@ -1467,6 +1740,13 @@
                 ],
                 "summary": "CreateRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Restaurant Object",
                         "name": "restaurant",
@@ -1495,15 +1775,27 @@
         },
         "/restaurants/menus/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all menus by restaurant",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Global"
+                    "User"
                 ],
                 "summary": "MenuByRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Restaurant ID",
@@ -1530,6 +1822,11 @@
         },
         "/restaurants/rating/{id}": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add rating to a restaurant",
                 "consumes": [
                     "application/json"
@@ -1542,6 +1839,13 @@
                 ],
                 "summary": "AddRatingtoRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Restaurant ID",
@@ -1610,6 +1914,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a restaurant",
                 "consumes": [
                     "application/json"
@@ -1622,6 +1931,13 @@
                 ],
                 "summary": "UpdateRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Restaurant ID",
@@ -1655,6 +1971,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a restaurant",
                 "produces": [
                     "application/json"
@@ -1664,6 +1985,13 @@
                 ],
                 "summary": "DeleteRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Restaurant ID",
@@ -1717,6 +2045,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a table",
                 "consumes": [
                     "application/json"
@@ -1729,6 +2062,13 @@
                 ],
                 "summary": "Create a table",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Table",
                         "name": "table",
@@ -1793,6 +2133,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a table",
                 "consumes": [
                     "application/json"
@@ -1805,6 +2150,13 @@
                 ],
                 "summary": "Update a table",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Table ID",
@@ -1838,6 +2190,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a table",
                 "consumes": [
                     "application/json"
@@ -1850,6 +2207,13 @@
                 ],
                 "summary": "Delete a table",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Table ID",

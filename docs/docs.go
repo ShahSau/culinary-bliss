@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/categeory/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a category",
                 "consumes": [
                     "application/json"
@@ -34,6 +39,13 @@ const docTemplate = `{
                         "description": "Category ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -239,6 +251,11 @@ const docTemplate = `{
         },
         "/food": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create Food",
                 "consumes": [
                     "application/json"
@@ -251,6 +268,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create Food",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Food Object",
                         "name": "food",
@@ -315,6 +339,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update Food",
                 "consumes": [
                     "application/json"
@@ -327,6 +356,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update Food",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Food ID",
@@ -360,6 +396,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete Food",
                 "consumes": [
                     "application/json"
@@ -372,6 +413,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete Food",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Food ID",
@@ -444,6 +492,11 @@ const docTemplate = `{
         },
         "/invoice": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get Invoices",
                 "consumes": [
                     "application/json"
@@ -455,6 +508,15 @@ const docTemplate = `{
                     "Admin"
                 ],
                 "summary": "Get Invoices",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -471,6 +533,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create Invoice",
                 "consumes": [
                     "application/json"
@@ -483,6 +550,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create Invoice",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Invoice",
                         "name": "invoice",
@@ -511,6 +585,11 @@ const docTemplate = `{
         },
         "/invoice/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get Invoice",
                 "consumes": [
                     "application/json"
@@ -523,6 +602,13 @@ const docTemplate = `{
                 ],
                 "summary": "Get Invoice",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Invoice ID",
@@ -547,6 +633,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update Invoice",
                 "consumes": [
                     "application/json"
@@ -559,6 +650,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update Invoice",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Invoice ID",
@@ -592,6 +690,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete Invoice",
                 "consumes": [
                     "application/json"
@@ -604,6 +707,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete Invoice",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Invoice ID",
@@ -757,6 +867,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a menu",
                 "consumes": [
                     "application/json"
@@ -769,6 +884,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create a menu",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Menu object",
                         "name": "menu",
@@ -833,6 +955,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a menu",
                 "consumes": [
                     "application/json"
@@ -845,6 +972,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update a menu",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Menu ID",
@@ -878,6 +1012,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a menu",
                 "consumes": [
                     "application/json"
@@ -890,6 +1029,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete a menu",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Menu ID",
@@ -916,6 +1062,11 @@ const docTemplate = `{
         },
         "/order": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a order",
                 "consumes": [
                     "application/json"
@@ -928,6 +1079,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create a order",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Table ID",
                         "name": "table_id",
@@ -974,6 +1132,11 @@ const docTemplate = `{
         },
         "/order/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a order",
                 "consumes": [
                     "application/json"
@@ -986,6 +1149,13 @@ const docTemplate = `{
                 ],
                 "summary": "Get a order",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order ID",
@@ -1010,6 +1180,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a order",
                 "consumes": [
                     "application/json"
@@ -1022,6 +1197,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update a order",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order ID",
@@ -1055,6 +1237,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a order",
                 "consumes": [
                     "application/json"
@@ -1067,6 +1254,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete a order",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order ID",
@@ -1093,6 +1287,11 @@ const docTemplate = `{
         },
         "/orderItem": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create Order Item",
                 "consumes": [
                     "application/json"
@@ -1101,10 +1300,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order User"
+                    "User"
                 ],
                 "summary": "Create Order Item",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Order Item Object",
                         "name": "orderItem",
@@ -1133,6 +1339,11 @@ const docTemplate = `{
         },
         "/orderItem/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get Order Item",
                 "consumes": [
                     "application/json"
@@ -1141,10 +1352,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order User"
+                    "User"
                 ],
                 "summary": "Get Order Item",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order Item ID",
@@ -1169,6 +1387,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update Order Item",
                 "consumes": [
                     "application/json"
@@ -1177,10 +1400,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order User"
+                    "User"
                 ],
                 "summary": "Update Order Item",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order Item ID",
@@ -1214,6 +1444,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete Order Item",
                 "consumes": [
                     "application/json"
@@ -1222,10 +1457,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order User"
+                    "User"
                 ],
                 "summary": "Delete Order Item",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Order Item ID",
@@ -1252,6 +1494,11 @@ const docTemplate = `{
         },
         "/orderItems": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get Order Items",
                 "consumes": [
                     "application/json"
@@ -1260,9 +1507,18 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order Admin"
+                    "Admin"
                 ],
                 "summary": "Get Order Items",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1281,6 +1537,11 @@ const docTemplate = `{
         },
         "/orders": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all orders",
                 "consumes": [
                     "application/json"
@@ -1293,6 +1554,13 @@ const docTemplate = `{
                 ],
                 "summary": "Get all orders",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Record Per Page",
@@ -1466,6 +1734,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a restaurant",
                 "consumes": [
                     "application/json"
@@ -1478,6 +1751,13 @@ const docTemplate = `{
                 ],
                 "summary": "CreateRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Restaurant Object",
                         "name": "restaurant",
@@ -1506,15 +1786,27 @@ const docTemplate = `{
         },
         "/restaurants/menus/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all menus by restaurant",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Global"
+                    "User"
                 ],
                 "summary": "MenuByRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Restaurant ID",
@@ -1541,6 +1833,11 @@ const docTemplate = `{
         },
         "/restaurants/rating/{id}": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add rating to a restaurant",
                 "consumes": [
                     "application/json"
@@ -1553,6 +1850,13 @@ const docTemplate = `{
                 ],
                 "summary": "AddRatingtoRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Restaurant ID",
@@ -1621,6 +1925,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a restaurant",
                 "consumes": [
                     "application/json"
@@ -1633,6 +1942,13 @@ const docTemplate = `{
                 ],
                 "summary": "UpdateRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Restaurant ID",
@@ -1666,6 +1982,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a restaurant",
                 "produces": [
                     "application/json"
@@ -1675,6 +1996,13 @@ const docTemplate = `{
                 ],
                 "summary": "DeleteRestaurant",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Restaurant ID",
@@ -1728,6 +2056,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a table",
                 "consumes": [
                     "application/json"
@@ -1740,6 +2073,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create a table",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Table",
                         "name": "table",
@@ -1804,6 +2144,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a table",
                 "consumes": [
                     "application/json"
@@ -1816,6 +2161,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update a table",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Table ID",
@@ -1849,6 +2201,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a table",
                 "consumes": [
                     "application/json"
@@ -1861,6 +2218,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete a table",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Table ID",
@@ -2405,6 +2769,7 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+
 }
 
 func init() {

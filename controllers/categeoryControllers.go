@@ -53,6 +53,8 @@ func GetCategories(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @param id path string true "Category ID"
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Success		200	{object}	string
 // @Failure		500	{object}	string
 // @Router			/categeory/{id} [get]

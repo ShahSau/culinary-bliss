@@ -80,6 +80,8 @@ func GetTable(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param table body types.Table true "Table"
 // @Success 201 {object} string
 // @Failure 400 {object} string
@@ -129,6 +131,8 @@ func CreateTable(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Table ID"
 // @Param table body types.Table true "Table"
 // @Success 200 {object} string
@@ -182,6 +186,8 @@ func UpdateTable(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Security		BearerAuth
+// @param Authorization header string true "Token"
 // @Param id path string true "Table ID"
 // @Success 200 {object} string
 // @Failure 500 {object} string
