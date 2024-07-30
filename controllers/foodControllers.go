@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ShahSau/culinary-bliss/database"
+	"github.com/ShahSau/culinary-bliss/helpers"
 	"github.com/ShahSau/culinary-bliss/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -126,6 +127,14 @@ func CreateFood(c *gin.Context) {
 		return
 	}
 
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
+
 	defer c.Request.Body.Close()
 	reqfood.Food_id = primitive.NewObjectID().Hex()
 
@@ -181,6 +190,13 @@ func UpdateFood(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&food); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
 		return
 	}
 
@@ -246,6 +262,13 @@ func UpdateFood(c *gin.Context) {
 func DeleteFood(c *gin.Context) {
 	foodId := c.Param("id")
 
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
 	_, err := foodCollection.DeleteOne(c.Request.Context(), bson.M{"food_id": foodId})
 
 	if err != nil {

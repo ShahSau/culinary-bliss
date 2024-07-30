@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/ShahSau/culinary-bliss/database"
+	"github.com/ShahSau/culinary-bliss/helpers"
 	"github.com/ShahSau/culinary-bliss/models"
 	"github.com/ShahSau/culinary-bliss/types"
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,14 @@ func GetInvoices(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
 		return
 	}
 
@@ -209,6 +218,14 @@ func UpdateInvoice(c *gin.Context) {
 // @Router /invoice/{id} [delete]
 func DeleteInvoice(c *gin.Context) {
 	var invoiceID = c.Param("id")
+
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
 
 	_, err := invoiceCollection.DeleteOne(c.Request.Context(), bson.M{"invoice_id": invoiceID})
 

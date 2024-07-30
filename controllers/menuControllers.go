@@ -126,6 +126,13 @@ func CreateMenu(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
 
 	var reqMenu models.Menu
 

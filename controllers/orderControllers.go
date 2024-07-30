@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ShahSau/culinary-bliss/database"
+	"github.com/ShahSau/culinary-bliss/helpers"
 	"github.com/ShahSau/culinary-bliss/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -29,6 +30,13 @@ var orderCollection *mongo.Collection = database.GetCollection(database.DB, "ord
 // @Failure 500 {object} string
 // @Router /orders [get]
 func GetOrders(c *gin.Context) {
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
 	recordPerPage, err := strconv.Atoi(c.Query("recordPerPage"))
 	if err != nil || recordPerPage < 1 {
 		recordPerPage = 10
@@ -163,6 +171,13 @@ func UpdateOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
 
 	reqOrder.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
@@ -193,6 +208,13 @@ func DeleteOrder(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
 		return
 	}
 

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ShahSau/culinary-bliss/database"
+	"github.com/ShahSau/culinary-bliss/helpers"
 	"github.com/ShahSau/culinary-bliss/models"
 	"github.com/ShahSau/culinary-bliss/types"
 	"github.com/gin-gonic/gin"
@@ -174,6 +175,14 @@ func UpdateRestaurant(c *gin.Context) {
 		return
 	}
 
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
+
 	var restaurantReq types.Restaurant
 
 	if err := c.ShouldBindJSON(&restaurantReq); err != nil {
@@ -234,6 +243,14 @@ func UpdateRestaurant(c *gin.Context) {
 // @Router /restaurants/{id} [delete]
 func DeleteRestaurant(c *gin.Context) {
 	restaurant_id := c.Param("id")
+
+	userEmail, _ := c.Get("first_name")
+	var isAdmin = helpers.IsAdmin(userEmail.(string))
+
+	if !isAdmin {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
+		return
+	}
 
 	defer c.Request.Body.Close()
 
