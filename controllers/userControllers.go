@@ -192,7 +192,7 @@ func DeleteUser(c *gin.Context) {
 
 // @Summary		Reset Password
 // @Description	Reset user password
-// @Tags			Auth
+// @Tags			User
 // @Accept			json
 // @Produce		json
 // @Security		BearerAuth

@@ -9,4 +9,6 @@ func GlobalRoutes(c *gin.Engine) {
 	c.GET("/categories", controllers.GetCategories)
 	c.GET("/table", controllers.GetTables)
 	c.GET("/table/:id", controllers.GetTable)
+	c.GET("/menu", controllers.GetMenus)
+	c.GET("/menu/:id", controllers.GetMenu)
 }

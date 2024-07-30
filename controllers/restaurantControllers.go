@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ShahSau/culinary-bliss/database"
@@ -170,4 +171,8 @@ func DeleteRestaurant(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Restaurant deleted successfully", "status": http.StatusOK, "success": true, "data": nil})
+}
+
+func MenuByRestaurant(c *gin.Context) {
+	fmt.Println("FoodByRestaurant")
 }
