@@ -77,6 +77,30 @@ definitions:
     - table_id
     - total_amount
     type: object
+  models.OrderItem:
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      food_id:
+        type: string
+      order_id:
+        type: string
+      order_item_id:
+        type: string
+      quantity:
+        type: string
+      total_amount:
+        type: number
+      updated_at:
+        type: string
+    required:
+    - food_id
+    - order_id
+    - quantity
+    - total_amount
+    type: object
   types.Category:
     properties:
       image:
@@ -885,6 +909,130 @@ paths:
       summary: Update a order
       tags:
       - Admin
+  /orderItem:
+    post:
+      consumes:
+      - application/json
+      description: Create Order Item
+      parameters:
+      - description: Order Item Object
+        in: body
+        name: orderItem
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderItem'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.OrderItem'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create Order Item
+      tags:
+      - Order User
+  /orderItem/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Order Item
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order Item deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Delete Order Item
+      tags:
+      - Order User
+    get:
+      consumes:
+      - application/json
+      description: Get Order Item
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OrderItem'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get Order Item
+      tags:
+      - Order User
+    put:
+      consumes:
+      - application/json
+      description: Update Order Item
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Order Item Object
+        in: body
+        name: orderItem
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OrderItem'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Update Order Item
+      tags:
+      - Order User
+  /orderItems:
+    get:
+      consumes:
+      - application/json
+      description: Get Order Items
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get Order Items
+      tags:
+      - Order Admin
   /orders:
     get:
       consumes:
