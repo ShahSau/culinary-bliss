@@ -24,8 +24,6 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	routes.UserRoutes(router)
-
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Swagger docs
@@ -34,8 +32,11 @@ func main() {
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "https://culinary-bliss.onrender.com"
 
+	routes.AuthRoutes(router)
+
 	router.Use(middleware.Authtication)
 
+	routes.UserRoutes(router)
 	routes.FoodRoutes(router)
 	routes.MenuRoutes(router)
 	routes.InvoiceRoutes(router)
