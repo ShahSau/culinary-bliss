@@ -34,7 +34,6 @@
 >   - [🧪 Tests](#-tests)
 > - [🛠 Project Roadmap](#-project-roadmap)
 > - [📄 License](#-license)
-> - [👏 Acknowledgments](#-acknowledgments)
 
 ---
 
@@ -290,10 +289,3 @@ This project is protected under the MIT License. For more details, refer to the 
 
 ---
 
-##  Acknowledgments
-
-- List any resources, contributors, inspiration, etc. here.
-
-[**Return**](#-quick-links)
-
----
