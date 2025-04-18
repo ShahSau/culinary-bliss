@@ -17,3 +17,10 @@ type Food struct {
 	CreatedAt   time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt   time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 }
+
+type Response struct {
+	AllFoods      []Food `json:"all_foods"`
+	Page          int    `json:"page"`
+	RecordPerPage int    `json:"record_per_page"`
+	StartIndex    int    `json:"start_index"`
+}

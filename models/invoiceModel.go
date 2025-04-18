@@ -17,3 +17,14 @@ type Invoice struct {
 	CreatedAt        time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt        time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 }
+
+type InvoiceViewFormat struct {
+	Invoice_id        string      `json:"invoice_id"`
+	Payment_method    string      `json:"payment_method"`
+	Order_id          string      `json:"order_id"`
+	Payment_status    string      `json:"payment_status"`
+	Payment_due       interface{} `json:"payment_due"`
+	Table_number      interface{} `json:"table_number"`
+	Paymenet_due_date time.Time   `json:"payment_due_date"`
+	Order_details     interface{} `json:"order_details"`
+}
