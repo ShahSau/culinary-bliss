@@ -4,15 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ShahSau/culinary-bliss/services"
-
-	"github.com/ShahSau/culinary-bliss/database"
 	"github.com/ShahSau/culinary-bliss/models"
+	"github.com/ShahSau/culinary-bliss/services"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
 )
-
-var tableCollection *mongo.Collection = database.GetCollection(database.DB, "tables")
 
 // @Summary Get all tables
 // @Description Get all tables

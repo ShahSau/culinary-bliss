@@ -4,14 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ShahSau/culinary-bliss/database"
 	"github.com/ShahSau/culinary-bliss/models"
 	"github.com/ShahSau/culinary-bliss/services"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
 )
-
-var menuCollection *mongo.Collection = database.GetCollection(database.DB, "menu")
 
 // @Summary Get all menus
 // @Description Get all menus
