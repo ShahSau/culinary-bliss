@@ -3,16 +3,11 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"strconv"
-	"time"
 
 	"github.com/ShahSau/culinary-bliss/database"
-	"github.com/ShahSau/culinary-bliss/helpers"
 	"github.com/ShahSau/culinary-bliss/models"
-	"github.com/ShahSau/culinary-bliss/types"
+	"github.com/ShahSau/culinary-bliss/services"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -30,51 +25,14 @@ var menuCollection *mongo.Collection = database.GetCollection(database.DB, "menu
 // @Failure 500 {object} string
 // @Router /menu [get]
 func GetMenus(c *gin.Context) {
-
-	recordPerPage, err := strconv.Atoi(c.Query("recordPerPage"))
-	if err != nil || recordPerPage < 1 {
-		recordPerPage = 10
-	}
-
-	page, errp := strconv.Atoi(c.Query("page"))
-	if errp != nil || page < 1 {
-		page = 1
-	}
-
-	startIndex := (page - 1) * recordPerPage
-	startIndex, err = strconv.Atoi(c.Query("startIndex"))
-
-	matchStage := bson.D{{Key: "$match", Value: bson.D{{}}}}
-	projectStage := bson.D{
-		{
-			Key: "$project", Value: bson.D{
-				{Key: "id", Value: 1},
-				{Key: "name", Value: 1},
-				{Key: "description", Value: 1},
-				{Key: "start_date", Value: 1},
-				{Key: "end_date", Value: 1},
-				{Key: "menu_id", Value: 1},
-			},
-		},
-	}
-
-	record := bson.D{{Key: "$skip", Value: recordPerPage * (page - 1)}}
-	limit := bson.D{{Key: "$limit", Value: recordPerPage}}
-
-	result, errAgg := menuCollection.Aggregate(c.Request.Context(), mongo.Pipeline{matchStage, projectStage, record, limit})
-
-	if errAgg != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errAgg.Error()})
+	response, err := services.GetMenus(c)
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	var allMenus []bson.M
-	if err = result.All(c.Request.Context(), &allMenus); err != nil {
-		log.Fatal(err)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": allMenus, "page": page, "recordPerPage": recordPerPage, "startIndex": startIndex})
-
+	c.JSON(http.StatusOK, gin.H{"data": response.AllMenus, "page": response.Page, "recordPerPage": response.RecordPerPage, "startIndex": response.StartIndex})
 }
 
 // @Summary Get a menu
@@ -89,13 +47,9 @@ func GetMenus(c *gin.Context) {
 func GetMenu(c *gin.Context) {
 	var menuID = c.Param("id")
 
-	var menu models.Menu
-
-	defer c.Request.Body.Close()
-
-	err := menuCollection.FindOne(c.Request.Context(), primitive.M{"menu_id": menuID}).Decode(&menu)
-
+	menu, err := services.GetMenuByID(menuID, c)
 	if err != nil {
+		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -122,35 +76,14 @@ func GetMenu(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /menu [post]
 func CreateMenu(c *gin.Context) {
-	var incomingMenu types.Menu
+	var menu models.Menu
 
-	if err := c.ShouldBindJSON(&incomingMenu); err != nil {
+	if err := c.ShouldBindJSON(&menu); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	userEmail, _ := c.Get("first_name")
-	var isAdmin = helpers.IsAdmin(userEmail.(string))
 
-	if !isAdmin {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
-		return
-	}
-
-	var reqMenu models.Menu
-
-	reqMenu.Name = incomingMenu.Name
-	reqMenu.Description = incomingMenu.Description
-	reqMenu.Start_Date, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	reqMenu.End_Date, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	reqMenu.ID = primitive.NewObjectID()
-	reqMenu.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	reqMenu.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	reqMenu.Menu_id = reqMenu.ID.Hex()
-
-	defer c.Request.Body.Close()
-
-	_, err := menuCollection.InsertOne(c.Request.Context(), reqMenu)
-
+	reqMenu, err := services.CreateMenu(menu, c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -172,40 +105,14 @@ func CreateMenu(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /menu/{id} [put]
 func UpdateMenu(c *gin.Context) {
-	var reqMenu types.Menu
+	var reqMenu models.Menu
 
 	if err := c.ShouldBindJSON(&reqMenu); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	userEmail, _ := c.Get("first_name")
-	var isAdmin = helpers.IsAdmin(userEmail.(string))
-
-	if !isAdmin {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
-		return
-	}
-
-	menuId := c.Param("id")
-
-	var menu models.Menu
-
-	err := menuCollection.FindOne(c.Request.Context(), bson.M{"menu_id": menuId}).Decode(&menu)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	menu.Name = reqMenu.Name
-	menu.Description = reqMenu.Description
-	menu.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	menu.Start_Date, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	menu.End_Date, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-
-	_, err = menuCollection.UpdateOne(c.Request.Context(), bson.M{"menu_id": menuId}, bson.M{"$set": menu})
-
+	menu, err := services.UpdateMenu(c.Param("id"), reqMenu, c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -228,16 +135,7 @@ func UpdateMenu(c *gin.Context) {
 func DeleteMenu(c *gin.Context) {
 	menuId := c.Param("id")
 
-	userEmail, _ := c.Get("first_name")
-	var isAdmin = helpers.IsAdmin(userEmail.(string))
-
-	if !isAdmin {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
-		return
-	}
-
-	_, err := menuCollection.DeleteOne(c.Request.Context(), bson.M{"menu_id": menuId})
-
+	err := services.DeleteMenu(menuId, c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

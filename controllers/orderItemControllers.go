@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/ShahSau/culinary-bliss/database"
-	"github.com/ShahSau/culinary-bliss/helpers"
 	"github.com/ShahSau/culinary-bliss/models"
+	"github.com/ShahSau/culinary-bliss/services"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -33,31 +33,10 @@ var orderItemCollection *mongo.Collection = database.GetCollection(database.DB, 
 // @Failure 400 {object} string
 // @Router /orderItems [get]
 func GetOrderItems(c *gin.Context) {
-	orders, err := orderItemCollection.Find(c.Request.Context(), bson.M{}, nil)
-
+	allOrdersItems, err := services.GetOrderItems(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-
-	userEmail, _ := c.Get("first_name")
-	var isAdmin = helpers.IsAdmin(userEmail.(string))
-
-	if !isAdmin {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to view this resource"})
-		return
-	}
-
-	defer orders.Close(c.Request.Context())
-
-	var allOrdersItems []bson.M
-
-	for orders.Next(c.Request.Context()) {
-		var orderItem bson.M
-		if err = orders.Decode(&orderItem); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": true, "message": err.Error()})
-		}
-		allOrdersItems = append(allOrdersItems, orderItem)
 	}
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order Items retrived successfully", "data": allOrdersItems, "status": http.StatusOK, "success": true})
 }
@@ -76,13 +55,9 @@ func GetOrderItems(c *gin.Context) {
 func GetOrderItem(c *gin.Context) {
 	var orderItemId = c.Param("id")
 
-	defer c.Request.Body.Close()
-
-	var orderItem models.OrderItem
-	errFetch := orderItemCollection.FindOne(c.Request.Context(), primitive.M{"order_item_id": orderItemId}).Decode(&orderItem)
-
-	if errFetch != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": errFetch.Error()})
+	orderItem, err := services.GetOrderItemByID(orderItemId, c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -102,23 +77,13 @@ func GetOrderItem(c *gin.Context) {
 // @Router /orderItem [post]
 func CreateOrderItem(c *gin.Context) {
 	var orderItem models.OrderItem
-
 	if err := c.ShouldBindJSON(&orderItem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	defer c.Request.Body.Close()
-
-	orderItem.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	orderItem.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	orderItem.ID = primitive.NewObjectID()
-	orderItem.Order_item_id = orderItem.ID.Hex()
-
-	_, err := orderItemCollection.InsertOne(c.Request.Context(), orderItem)
-
+	orderItem, err := services.CreateOrderItem(orderItem, c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"error": false, "message": "Order Item created successfully", "data": orderItem, "status": http.StatusCreated, "success": true})
@@ -145,20 +110,11 @@ func UpdateOrderItem(c *gin.Context) {
 		return
 	}
 
-	defer c.Request.Body.Close()
-
-	var orderItem models.OrderItem
-	err := orderItemCollection.FindOne(c.Request.Context(), bson.M{"order_item_id": orderItemId}).Decode(&orderItem)
-
+	orderItem, err := services.UpdateOrderItem(orderItemId, reqorderItem, c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error() + " Order Item not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	orderItem.Quantity = reqorderItem.Quantity
-	orderItem.Total_amount = reqorderItem.Total_amount
-	orderItem.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-
 	c.JSON(http.StatusOK, gin.H{"error": false, "message": "Order Item updated successfully", "data": orderItem, "status": http.StatusOK, "success": true})
 }
 
@@ -176,10 +132,9 @@ func UpdateOrderItem(c *gin.Context) {
 func DeleteOrderItem(c *gin.Context) {
 	orderItemId := c.Param("id")
 
-	_, err := orderItemCollection.DeleteOne(c.Request.Context(), bson.M{"order_item_id": orderItemId})
-
+	_, err := services.GetOrderItemByID(orderItemId, c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

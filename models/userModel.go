@@ -21,3 +21,10 @@ type User struct {
 	Token        string             `json:"token,omitempty" bson:"token,omitempty"`
 	RefreshToken string             `json:"refresh_token,omitempty" bson:"refresh_token,omitempty"`
 }
+
+type ResponseUser struct {
+	AllUsers      []User `json:"all_users"`
+	Page          int    `json:"page"`
+	RecordPerPage int    `json:"record_per_page"`
+	StartIndex    int    `json:"start_index"`
+}

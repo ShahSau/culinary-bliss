@@ -16,3 +16,10 @@ type Order struct {
 	CreatedAt    time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt    time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 }
+
+type ResponseOrder struct {
+	AllOrders     []Order `json:"all_orders"`
+	Page          int     `json:"page"`
+	RecordPerPage int     `json:"record_per_page"`
+	StartIndex    int     `json:"start_index"`
+}

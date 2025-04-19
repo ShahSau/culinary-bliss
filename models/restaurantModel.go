@@ -20,3 +20,9 @@ type Restaurant struct {
 	RatingCount   int                `json:"ratingCount" binding:"required" bson:"ratingCount"`
 	Menu          []Menu             `json:"menu" binding:"required" bson:"menu"`
 }
+type ResponseRestaurant struct {
+	AllRestaurants []Restaurant `json:"all_restaurants"`
+	Page           int          `json:"page"`
+	RecordPerPage  int          `json:"record_per_page"`
+	StartIndex     int          `json:"start_index"`
+}
