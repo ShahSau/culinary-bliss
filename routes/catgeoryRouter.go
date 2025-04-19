@@ -6,8 +6,8 @@ import (
 )
 
 func CatgeoryRoutes(c *gin.Engine) {
-	c.GET("/categeory/:id", controllers.GetCategories)
-	c.POST("/categories", controllers.CreateCategory)
+	c.GET("/categeory/:id", controllers.GetCategoryByID)
+	c.POST("/categeory", controllers.CreateCategory)
 	c.PUT("/categeory/:id", controllers.UpdateCategory)
 	c.DELETE("/categeory/:id", controllers.DeleteCategory)
 

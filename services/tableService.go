@@ -45,7 +45,7 @@ func GetTable(c *gin.Context, id string) (models.Table, error) {
 
 	defer c.Request.Body.Close()
 
-	err = tableCollection.FindOne(c.Request.Context(), bson.M{"table_id": table_id}).Decode(&table)
+	err = tableCollection.FindOne(c.Request.Context(), bson.M{"_id": table_id}).Decode(&table)
 
 	if err != nil {
 		return table, err

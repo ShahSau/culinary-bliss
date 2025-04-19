@@ -14,6 +14,6 @@ func GlobalRoutes(c *gin.Engine) {
 	c.GET("/restaurants", controllers.GetRestaurants)
 	c.GET("/restaurants/:id", controllers.GetRestaurant)
 	c.GET("/restaurants/menus/:id", controllers.MenuByRestaurant)
-	c.GET("/food", controllers.GetFoods)
+	c.GET("/foods", controllers.GetFoods)
 	c.GET("/food/:id", controllers.GetFood)
 }
